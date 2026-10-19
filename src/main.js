@@ -1,18 +1,16 @@
-
-import readline from "node:readline/promises";
-import { stdin, stdout } from "node:process";
-
+// import readline from "node:readline/promises";
+// import { stdin, stdout } from "node:process";
 import { categories } from "./data/categories.js";
 import { searchBusinesses } from "./services/googlePlaces.js";
 import { normalizeBusiness } from "./utils/normalizeBusiness.js";
 import { deduplicateBusinesses } from "./utils/deduplicate.js";
 import { exportBusinessesToCsv } from "./exporters/csvExporter.js";
 
-const rl = readline.createInterface({ input: stdin, output: stdout });
+// const rl = readline.createInterface({ input: stdin, output: stdout });
 
-async function ask(question) {
-  return (await rl.question(question)).trim();
-}
+// async function ask(question) {
+//   return (await rl.question(question)).trim();
+// }
 
 async function fetchCategoryBusinesses(city, category) {
   const results = [];
@@ -46,7 +44,8 @@ async function fetchCategoryBusinesses(city, category) {
 
 async function main() {
   try {
-    const city = await ask("Enter city or area: ");
+    // const city = await ask("Enter city or area: ");
+    const city = ludhiana;
 
     if (!city) {
       console.log("Please enter a city or area.");
@@ -73,7 +72,8 @@ async function main() {
 
     await exportBusinessesToCsv(uniqueBusinesses, city);
   } finally {
-    rl.close();
+    // rl.close();
+    console.log("fetching completed");
   }
 }
 
