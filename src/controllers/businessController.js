@@ -1,4 +1,3 @@
-
 import { categories } from "../data/categories.js";
 import { searchBusinesses } from "../services/googlePlaces.js";
 import { normalizeBusiness } from "../utils/normalizeBusiness.js";
