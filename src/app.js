@@ -1,4 +1,3 @@
-
 import express from "express";
 import businessRoutes from "./routes/businessRoutes.js";
 

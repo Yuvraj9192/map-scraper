@@ -8,7 +8,6 @@ app.listen(PORT, () => {
 });
 
 
-
 // for all
 // http://localhost:3000/api/businesses?city=Zirakpur
 

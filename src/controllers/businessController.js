@@ -1,8 +1,9 @@
-
+import path from "node:path";
 import { categories } from "../data/categories.js";
 import { searchBusinesses } from "../services/googlePlaces.js";
 import { normalizeBusiness } from "../utils/normalizeBusiness.js";
 import { deduplicateBusinesses } from "../utils/deduplicate.js";
+import { exportBusinessesToCsv } from "../exporters/csvExporter.js";
 
 export async function getBusinesses(req, res) {
   try {
@@ -17,12 +18,14 @@ export async function getBusinesses(req, res) {
     }
 
     const selectedCategories =
-      !requestedCategory || requestedCategory.toLowerCase() === "all"
-        ? categories
-        : categories.filter(
-            (item) =>
-              item.toLowerCase() === requestedCategory.toLowerCase()
-          );
+  !requestedCategory || requestedCategory.toLowerCase() === "all"
+    ? categories
+    : [
+        categories.find(
+          (item) =>
+            item.toLowerCase() === requestedCategory.toLowerCase()
+        ) || requestedCategory,
+      ];
 
     if (selectedCategories.length === 0) {
       return res.status(400).json({
@@ -50,20 +53,21 @@ export async function getBusinesses(req, res) {
 
     const uniqueBusinesses = deduplicateBusinesses(allBusinesses);
 
-    return res.status(200).json({
-      success: true,
-      city,
-      categoriesSearched: selectedCategories.length,
-      totalFetched: allBusinesses.length,
-      uniqueCount: uniqueBusinesses.length,
-      data: uniqueBusinesses,
+    const filePath = await exportBusinessesToCsv(uniqueBusinesses, city);
+
+    return res.download(filePath, path.basename(filePath), (error) => {
+      if (error) {
+        console.error("CSV download failed:", error.message);
+      }
     });
   } catch (error) {
     console.error("getBusinesses error:", error.message);
 
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch businesses.",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch businesses.",
+      });
+    }
   }
 }

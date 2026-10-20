@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 import { getBusinesses } from "../controllers/businessController.js";
 
