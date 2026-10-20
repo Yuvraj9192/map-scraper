@@ -1,4 +1,4 @@
-import path from "node:path";
+
 import { categories } from "../data/categories.js";
 import { searchBusinesses } from "../services/googlePlaces.js";
 import { normalizeBusiness } from "../utils/normalizeBusiness.js";
@@ -17,25 +17,20 @@ export async function getBusinesses(req, res) {
       });
     }
 
+    // Search all categories if category is omitted or set to "all".
     const selectedCategories =
-  !requestedCategory || requestedCategory.toLowerCase() === "all"
-    ? categories
-    : [
-        categories.find(
-          (item) =>
-            item.toLowerCase() === requestedCategory.toLowerCase()
-        ) || requestedCategory,
-      ];
-
-    if (selectedCategories.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Unknown category.",
-        availableCategories: categories,
-      });
-    }
+      !requestedCategory ||
+      requestedCategory.toLowerCase() === "all"
+        ? categories
+        : [
+            categories.find(
+              (item) =>
+                item.toLowerCase() === requestedCategory.toLowerCase()
+            ) || requestedCategory,
+          ];
 
     const allBusinesses = [];
+    const failedCategories = [];
 
     for (const category of selectedCategories) {
       try {
@@ -47,19 +42,46 @@ export async function getBusinesses(req, res) {
 
         allBusinesses.push(...normalized);
       } catch (error) {
-        console.error(`Category "${category}" failed:`, error.message);
+        console.error(
+          `Category "${category}" failed:`,
+          error.message
+        );
+
+        failedCategories.push(category);
       }
     }
 
     const uniqueBusinesses = deduplicateBusinesses(allBusinesses);
 
-    const filePath = await exportBusinessesToCsv(uniqueBusinesses, city);
+    // Don't return an empty CSV if every category search failed.
+    if (uniqueBusinesses.length === 0) {
+      return res.status(502).json({
+        success: false,
+        message:
+          "No businesses could be retrieved. Check the search service and try again.",
+        failedCategories,
+      });
+    }
 
-    return res.download(filePath, path.basename(filePath), (error) => {
-      if (error) {
-        console.error("CSV download failed:", error.message);
-      }
-    });
+    // Generate the CSV directly in memory.
+    const csv = exportBusinessesToCsv(uniqueBusinesses);
+
+    const safeCity =
+      city
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "") || "businesses";
+
+    res.setHeader("Content-Type", "text/csv; charset=utf-8");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="business_list_${safeCity}.csv"`
+    );
+
+    res.setHeader("Cache-Control", "no-store");
+
+    return res.status(200).send(csv);
   } catch (error) {
     console.error("getBusinesses error:", error.message);
 
