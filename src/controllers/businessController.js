@@ -74,53 +74,75 @@ export async function getBusinesses(req, res) {
             normalizeBusiness(place, city, category)
           )
         );
+        
+        // 4. Save this category's data before proceeding to the next category.
+        const saveResults = await Promise.allSettled(
+          normalized.map(async (business) => {
+            const data = {
+              placeId: business.placeId || null,
+              name: business.name,
+              address: business.address || null,
+              phone: business.phone || null,
+              email: business.email || null,
+              website: business.website || null,
+              category: Array.isArray(business.category)
+                ? business.category.join(", ")
+                : business.category || null,
+              searchedCategory: category,
+              city,
+              googleMapsUrl: business.googleMapsUrl || null,
+            };
 
-        // 4. Save fetched businesses to PostgreSQL.
-        for (const business of normalized) {
-          const data = {
-            placeId: business.placeId || null,
-            name: business.name,
-            address: business.address || null,
-            phone: business.phone || null,
-            email: business.email || null,
-            website: business.website || null,
-            category: Array.isArray(business.category)
-              ? business.category.join(", ")
-              : business.category || null,
-            searchedCategory: category,
-            city,
-            googleMapsUrl: business.googleMapsUrl || null,
-          };
+            if (data.placeId) {
+              return prisma.business.upsert({
+                where: { placeId: data.placeId },
+                create: data,
+                update: {
+                  name: data.name,
+                  address: data.address,
+                  phone: data.phone,
+                  email: data.email,
+                  website: data.website,
+                  category: data.category,
+                  searchedCategory: data.searchedCategory,
+                  city: data.city,
+                  googleMapsUrl: data.googleMapsUrl,
+                },
+              });
+            }
 
-          if (data.placeId) {
-            // Update an existing place or insert a new one.
-            await prisma.business.upsert({
-              where: {
-                placeId: data.placeId,
-              },
-              create: data,
-              update: {
-                name: data.name,
-                address: data.address,
-                phone: data.phone,
-                email: data.email,
-                website: data.website,
-                category: data.category,
-                searchedCategory: data.searchedCategory,
-                city: data.city,
-                googleMapsUrl: data.googleMapsUrl,
-              },
-            });
-          } else {
-            // The schema permits a missing placeId.
-            await prisma.business.create({
-              data,
-            });
-          }
+            return prisma.business.create({ data });
+          })
+        );
+
+        const savedCount = saveResults.filter(
+          (result) => result.status === "fulfilled"
+        ).length;
+
+        const failedSaves = saveResults.filter(
+          (result) => result.status === "rejected"
+        );
+
+        console.log(
+          `SAVE REPORT: ${city} / ${category} — ` +
+          `${savedCount}/${normalized.length} saved or updated`
+        );
+
+        for (const failure of failedSaves) {
+          console.error("Business save failed:", failure.reason?.message);
         }
 
+        // Only proceed once every save attempt has finished.
+        if (failedSaves.length > 0) {
+          throw new Error(
+            `${failedSaves.length} of ${normalized.length} business records failed to save`
+          );
+        }
+
+        // Add the batch to the response only after successful persistence.
         allBusinesses.push(...normalized);
         fetchedCategories.push(category);
+
 
         console.log(
           `SAVED: ${normalized.length} businesses for ${city} / ${category}`
