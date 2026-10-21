@@ -1,0 +1,28 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Business {
+  id               String   @id @default(cuid())
+  placeId          String?  @unique
+  name             String
+  address          String?
+  phone            String?
+  email            String?
+  website          String?
+  category         String?
+  searchedCategory String?
+  city             String?
+  googleMapsUrl    String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([city])
+  @@index([category])
+}
