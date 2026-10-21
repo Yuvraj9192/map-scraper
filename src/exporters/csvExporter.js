@@ -11,6 +11,7 @@ const columns = [
   "googleMapsUrl",
 ];
 
+
 function escapeCsv(value) {
   const text = String(value ?? "");
 

@@ -12,6 +12,7 @@ const FIELD_MASK = [
   "places.websiteUri",
   "places.primaryTypeDisplayName",
   "places.googleMapsUri",
+  "places.rating",
   "nextPageToken",
 ].join(",");
 

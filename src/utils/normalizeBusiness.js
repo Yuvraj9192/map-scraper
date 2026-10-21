@@ -4,6 +4,7 @@ export function normalizeBusiness(place, city, category) {
     placeId: place.id ?? "",
     name: place.displayName?.text ?? "",
     address: place.formattedAddress ?? "",
+    rating: place.rating ?? "",
     phone: place.nationalPhoneNumber ?? "",
     website: place.websiteUri ?? "",
     category: place.primaryTypeDisplayName?.text ?? category,
