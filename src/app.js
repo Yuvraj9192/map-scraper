@@ -21,6 +21,13 @@ app.get("/", (req, res) => {
 app.get("/home", async (req, res) => {
   try {
     const businesses = await prisma.business.findMany({
+      where: {
+        city: {
+          equals: "panchkula",
+          mode: "insensitive",
+        },
+        // website: null,
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -40,7 +47,6 @@ app.get("/home", async (req, res) => {
     });
   }
 });
-
 
 app.use("/api/businesses", businessRoutes);
 
