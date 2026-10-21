@@ -14,3 +14,16 @@ const adapter = new PrismaNeon({
 });
 
 export const prisma = new PrismaClient({ adapter });
+
+export async function testDatabase() {
+  try {
+    await prisma.$connect();
+
+    const count = await prisma.business.count();
+
+    console.log("DATABASE CONNECTED");
+    console.log("TOTAL BUSINESSES IN DB:", count);
+  } catch (error) {
+    console.error("DATABASE TEST FAILED:", error);
+  }
+}
