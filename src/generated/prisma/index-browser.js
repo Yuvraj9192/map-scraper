@@ -136,9 +136,25 @@ exports.Prisma.BusinessScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ReportScalarFieldEnum = {
+  id: 'id',
+  businessId: 'businessId',
+  status: 'status',
+  reportData: 'reportData',
+  pdfUrl: 'pdfUrl',
+  error: 'error',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -151,9 +167,20 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.ReportStatus = exports.$Enums.ReportStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
 
 exports.Prisma.ModelName = {
-  Business: 'Business'
+  Business: 'Business',
+  Report: 'Report'
 };
 
 /**

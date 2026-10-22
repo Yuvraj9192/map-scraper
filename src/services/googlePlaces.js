@@ -1,4 +1,3 @@
-
 import { config } from "../config/env.js";
 
 const PLACES_URL =
