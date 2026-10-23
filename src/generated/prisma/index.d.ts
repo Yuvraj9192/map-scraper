@@ -23,6 +23,11 @@ export type Business = $Result.DefaultSelection<Prisma.$BusinessPayload>
  * 
  */
 export type Report = $Result.DefaultSelection<Prisma.$ReportPayload>
+/**
+ * Model AgentResearch
+ * 
+ */
+export type AgentResearch = $Result.DefaultSelection<Prisma.$AgentResearchPayload>
 
 /**
  * Enums
@@ -36,11 +41,25 @@ export namespace $Enums {
 
 export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
 
+
+export const ResearchStatus: {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+export type ResearchStatus = (typeof ResearchStatus)[keyof typeof ResearchStatus]
+
 }
 
 export type ReportStatus = $Enums.ReportStatus
 
 export const ReportStatus: typeof $Enums.ReportStatus
+
+export type ResearchStatus = $Enums.ResearchStatus
+
+export const ResearchStatus: typeof $Enums.ResearchStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -182,6 +201,16 @@ export class PrismaClient<
     * ```
     */
   get report(): Prisma.ReportDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.agentResearch`: Exposes CRUD operations for the **AgentResearch** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AgentResearches
+    * const agentResearches = await prisma.agentResearch.findMany()
+    * ```
+    */
+  get agentResearch(): Prisma.AgentResearchDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -630,7 +659,8 @@ export namespace Prisma {
 
   export const ModelName: {
     Business: 'Business',
-    Report: 'Report'
+    Report: 'Report',
+    AgentResearch: 'AgentResearch'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -646,7 +676,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "business" | "report"
+      modelProps: "business" | "report" | "agentResearch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -798,6 +828,80 @@ export namespace Prisma {
           }
         }
       }
+      AgentResearch: {
+        payload: Prisma.$AgentResearchPayload<ExtArgs>
+        fields: Prisma.AgentResearchFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AgentResearchFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AgentResearchFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload>
+          }
+          findFirst: {
+            args: Prisma.AgentResearchFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AgentResearchFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload>
+          }
+          findMany: {
+            args: Prisma.AgentResearchFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload>[]
+          }
+          create: {
+            args: Prisma.AgentResearchCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload>
+          }
+          createMany: {
+            args: Prisma.AgentResearchCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AgentResearchCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload>[]
+          }
+          delete: {
+            args: Prisma.AgentResearchDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload>
+          }
+          update: {
+            args: Prisma.AgentResearchUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload>
+          }
+          deleteMany: {
+            args: Prisma.AgentResearchDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AgentResearchUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AgentResearchUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload>[]
+          }
+          upsert: {
+            args: Prisma.AgentResearchUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentResearchPayload>
+          }
+          aggregate: {
+            args: Prisma.AgentResearchAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAgentResearch>
+          }
+          groupBy: {
+            args: Prisma.AgentResearchGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AgentResearchGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AgentResearchCountArgs<ExtArgs>
+            result: $Utils.Optional<AgentResearchCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -923,6 +1027,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     business?: BusinessOmit
     report?: ReportOmit
+    agentResearch?: AgentResearchOmit
   }
 
   /* Types for Logging */
@@ -1004,10 +1109,12 @@ export namespace Prisma {
 
   export type BusinessCountOutputType = {
     reports: number
+    agentResearches: number
   }
 
   export type BusinessCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     reports?: boolean | BusinessCountOutputTypeCountReportsArgs
+    agentResearches?: boolean | BusinessCountOutputTypeCountAgentResearchesArgs
   }
 
   // Custom InputTypes
@@ -1026,6 +1133,13 @@ export namespace Prisma {
    */
   export type BusinessCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReportWhereInput
+  }
+
+  /**
+   * BusinessCountOutputType without action
+   */
+  export type BusinessCountOutputTypeCountAgentResearchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AgentResearchWhereInput
   }
 
 
@@ -1262,6 +1376,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     reports?: boolean | Business$reportsArgs<ExtArgs>
+    agentResearches?: boolean | Business$agentResearchesArgs<ExtArgs>
     _count?: boolean | BusinessCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["business"]>
 
@@ -1316,6 +1431,7 @@ export namespace Prisma {
   export type BusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "placeId" | "name" | "address" | "phone" | "email" | "website" | "category" | "searchedCategory" | "city" | "googleMapsUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
   export type BusinessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     reports?: boolean | Business$reportsArgs<ExtArgs>
+    agentResearches?: boolean | Business$agentResearchesArgs<ExtArgs>
     _count?: boolean | BusinessCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BusinessIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1325,6 +1441,7 @@ export namespace Prisma {
     name: "Business"
     objects: {
       reports: Prisma.$ReportPayload<ExtArgs>[]
+      agentResearches: Prisma.$AgentResearchPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1735,6 +1852,7 @@ export namespace Prisma {
   export interface Prisma__BusinessClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     reports<T extends Business$reportsArgs<ExtArgs> = {}>(args?: Subset<T, Business$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    agentResearches<T extends Business$agentResearchesArgs<ExtArgs> = {}>(args?: Subset<T, Business$agentResearchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2191,6 +2309,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ReportScalarFieldEnum | ReportScalarFieldEnum[]
+  }
+
+  /**
+   * Business.agentResearches
+   */
+  export type Business$agentResearchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    where?: AgentResearchWhereInput
+    orderBy?: AgentResearchOrderByWithRelationInput | AgentResearchOrderByWithRelationInput[]
+    cursor?: AgentResearchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AgentResearchScalarFieldEnum | AgentResearchScalarFieldEnum[]
   }
 
   /**
@@ -3311,6 +3453,1104 @@ export namespace Prisma {
 
 
   /**
+   * Model AgentResearch
+   */
+
+  export type AggregateAgentResearch = {
+    _count: AgentResearchCountAggregateOutputType | null
+    _min: AgentResearchMinAggregateOutputType | null
+    _max: AgentResearchMaxAggregateOutputType | null
+  }
+
+  export type AgentResearchMinAggregateOutputType = {
+    id: string | null
+    businessId: string | null
+    status: $Enums.ResearchStatus | null
+    websiteExists: boolean | null
+    error: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AgentResearchMaxAggregateOutputType = {
+    id: string | null
+    businessId: string | null
+    status: $Enums.ResearchStatus | null
+    websiteExists: boolean | null
+    error: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AgentResearchCountAggregateOutputType = {
+    id: number
+    businessId: number
+    status: number
+    websiteExists: number
+    researchData: number
+    error: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AgentResearchMinAggregateInputType = {
+    id?: true
+    businessId?: true
+    status?: true
+    websiteExists?: true
+    error?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AgentResearchMaxAggregateInputType = {
+    id?: true
+    businessId?: true
+    status?: true
+    websiteExists?: true
+    error?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AgentResearchCountAggregateInputType = {
+    id?: true
+    businessId?: true
+    status?: true
+    websiteExists?: true
+    researchData?: true
+    error?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AgentResearchAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AgentResearch to aggregate.
+     */
+    where?: AgentResearchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AgentResearches to fetch.
+     */
+    orderBy?: AgentResearchOrderByWithRelationInput | AgentResearchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AgentResearchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AgentResearches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AgentResearches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AgentResearches
+    **/
+    _count?: true | AgentResearchCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AgentResearchMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AgentResearchMaxAggregateInputType
+  }
+
+  export type GetAgentResearchAggregateType<T extends AgentResearchAggregateArgs> = {
+        [P in keyof T & keyof AggregateAgentResearch]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAgentResearch[P]>
+      : GetScalarType<T[P], AggregateAgentResearch[P]>
+  }
+
+
+
+
+  export type AgentResearchGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AgentResearchWhereInput
+    orderBy?: AgentResearchOrderByWithAggregationInput | AgentResearchOrderByWithAggregationInput[]
+    by: AgentResearchScalarFieldEnum[] | AgentResearchScalarFieldEnum
+    having?: AgentResearchScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AgentResearchCountAggregateInputType | true
+    _min?: AgentResearchMinAggregateInputType
+    _max?: AgentResearchMaxAggregateInputType
+  }
+
+  export type AgentResearchGroupByOutputType = {
+    id: string
+    businessId: string
+    status: $Enums.ResearchStatus
+    websiteExists: boolean | null
+    researchData: JsonValue | null
+    error: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: AgentResearchCountAggregateOutputType | null
+    _min: AgentResearchMinAggregateOutputType | null
+    _max: AgentResearchMaxAggregateOutputType | null
+  }
+
+  type GetAgentResearchGroupByPayload<T extends AgentResearchGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AgentResearchGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AgentResearchGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AgentResearchGroupByOutputType[P]>
+            : GetScalarType<T[P], AgentResearchGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AgentResearchSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    businessId?: boolean
+    status?: boolean
+    websiteExists?: boolean
+    researchData?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["agentResearch"]>
+
+  export type AgentResearchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    businessId?: boolean
+    status?: boolean
+    websiteExists?: boolean
+    researchData?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["agentResearch"]>
+
+  export type AgentResearchSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    businessId?: boolean
+    status?: boolean
+    websiteExists?: boolean
+    researchData?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["agentResearch"]>
+
+  export type AgentResearchSelectScalar = {
+    id?: boolean
+    businessId?: boolean
+    status?: boolean
+    websiteExists?: boolean
+    researchData?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AgentResearchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "businessId" | "status" | "websiteExists" | "researchData" | "error" | "createdAt" | "updatedAt", ExtArgs["result"]["agentResearch"]>
+  export type AgentResearchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }
+  export type AgentResearchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }
+  export type AgentResearchIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }
+
+  export type $AgentResearchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AgentResearch"
+    objects: {
+      business: Prisma.$BusinessPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      businessId: string
+      status: $Enums.ResearchStatus
+      websiteExists: boolean | null
+      researchData: Prisma.JsonValue | null
+      error: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["agentResearch"]>
+    composites: {}
+  }
+
+  type AgentResearchGetPayload<S extends boolean | null | undefined | AgentResearchDefaultArgs> = $Result.GetResult<Prisma.$AgentResearchPayload, S>
+
+  type AgentResearchCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AgentResearchFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AgentResearchCountAggregateInputType | true
+    }
+
+  export interface AgentResearchDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AgentResearch'], meta: { name: 'AgentResearch' } }
+    /**
+     * Find zero or one AgentResearch that matches the filter.
+     * @param {AgentResearchFindUniqueArgs} args - Arguments to find a AgentResearch
+     * @example
+     * // Get one AgentResearch
+     * const agentResearch = await prisma.agentResearch.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AgentResearchFindUniqueArgs>(args: SelectSubset<T, AgentResearchFindUniqueArgs<ExtArgs>>): Prisma__AgentResearchClient<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AgentResearch that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AgentResearchFindUniqueOrThrowArgs} args - Arguments to find a AgentResearch
+     * @example
+     * // Get one AgentResearch
+     * const agentResearch = await prisma.agentResearch.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AgentResearchFindUniqueOrThrowArgs>(args: SelectSubset<T, AgentResearchFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AgentResearchClient<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AgentResearch that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentResearchFindFirstArgs} args - Arguments to find a AgentResearch
+     * @example
+     * // Get one AgentResearch
+     * const agentResearch = await prisma.agentResearch.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AgentResearchFindFirstArgs>(args?: SelectSubset<T, AgentResearchFindFirstArgs<ExtArgs>>): Prisma__AgentResearchClient<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AgentResearch that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentResearchFindFirstOrThrowArgs} args - Arguments to find a AgentResearch
+     * @example
+     * // Get one AgentResearch
+     * const agentResearch = await prisma.agentResearch.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AgentResearchFindFirstOrThrowArgs>(args?: SelectSubset<T, AgentResearchFindFirstOrThrowArgs<ExtArgs>>): Prisma__AgentResearchClient<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AgentResearches that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentResearchFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AgentResearches
+     * const agentResearches = await prisma.agentResearch.findMany()
+     * 
+     * // Get first 10 AgentResearches
+     * const agentResearches = await prisma.agentResearch.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const agentResearchWithIdOnly = await prisma.agentResearch.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AgentResearchFindManyArgs>(args?: SelectSubset<T, AgentResearchFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AgentResearch.
+     * @param {AgentResearchCreateArgs} args - Arguments to create a AgentResearch.
+     * @example
+     * // Create one AgentResearch
+     * const AgentResearch = await prisma.agentResearch.create({
+     *   data: {
+     *     // ... data to create a AgentResearch
+     *   }
+     * })
+     * 
+     */
+    create<T extends AgentResearchCreateArgs>(args: SelectSubset<T, AgentResearchCreateArgs<ExtArgs>>): Prisma__AgentResearchClient<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AgentResearches.
+     * @param {AgentResearchCreateManyArgs} args - Arguments to create many AgentResearches.
+     * @example
+     * // Create many AgentResearches
+     * const agentResearch = await prisma.agentResearch.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AgentResearchCreateManyArgs>(args?: SelectSubset<T, AgentResearchCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AgentResearches and returns the data saved in the database.
+     * @param {AgentResearchCreateManyAndReturnArgs} args - Arguments to create many AgentResearches.
+     * @example
+     * // Create many AgentResearches
+     * const agentResearch = await prisma.agentResearch.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AgentResearches and only return the `id`
+     * const agentResearchWithIdOnly = await prisma.agentResearch.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AgentResearchCreateManyAndReturnArgs>(args?: SelectSubset<T, AgentResearchCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AgentResearch.
+     * @param {AgentResearchDeleteArgs} args - Arguments to delete one AgentResearch.
+     * @example
+     * // Delete one AgentResearch
+     * const AgentResearch = await prisma.agentResearch.delete({
+     *   where: {
+     *     // ... filter to delete one AgentResearch
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AgentResearchDeleteArgs>(args: SelectSubset<T, AgentResearchDeleteArgs<ExtArgs>>): Prisma__AgentResearchClient<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AgentResearch.
+     * @param {AgentResearchUpdateArgs} args - Arguments to update one AgentResearch.
+     * @example
+     * // Update one AgentResearch
+     * const agentResearch = await prisma.agentResearch.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AgentResearchUpdateArgs>(args: SelectSubset<T, AgentResearchUpdateArgs<ExtArgs>>): Prisma__AgentResearchClient<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AgentResearches.
+     * @param {AgentResearchDeleteManyArgs} args - Arguments to filter AgentResearches to delete.
+     * @example
+     * // Delete a few AgentResearches
+     * const { count } = await prisma.agentResearch.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AgentResearchDeleteManyArgs>(args?: SelectSubset<T, AgentResearchDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AgentResearches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentResearchUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AgentResearches
+     * const agentResearch = await prisma.agentResearch.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AgentResearchUpdateManyArgs>(args: SelectSubset<T, AgentResearchUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AgentResearches and returns the data updated in the database.
+     * @param {AgentResearchUpdateManyAndReturnArgs} args - Arguments to update many AgentResearches.
+     * @example
+     * // Update many AgentResearches
+     * const agentResearch = await prisma.agentResearch.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AgentResearches and only return the `id`
+     * const agentResearchWithIdOnly = await prisma.agentResearch.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AgentResearchUpdateManyAndReturnArgs>(args: SelectSubset<T, AgentResearchUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AgentResearch.
+     * @param {AgentResearchUpsertArgs} args - Arguments to update or create a AgentResearch.
+     * @example
+     * // Update or create a AgentResearch
+     * const agentResearch = await prisma.agentResearch.upsert({
+     *   create: {
+     *     // ... data to create a AgentResearch
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AgentResearch we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AgentResearchUpsertArgs>(args: SelectSubset<T, AgentResearchUpsertArgs<ExtArgs>>): Prisma__AgentResearchClient<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AgentResearches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentResearchCountArgs} args - Arguments to filter AgentResearches to count.
+     * @example
+     * // Count the number of AgentResearches
+     * const count = await prisma.agentResearch.count({
+     *   where: {
+     *     // ... the filter for the AgentResearches we want to count
+     *   }
+     * })
+    **/
+    count<T extends AgentResearchCountArgs>(
+      args?: Subset<T, AgentResearchCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AgentResearchCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AgentResearch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentResearchAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AgentResearchAggregateArgs>(args: Subset<T, AgentResearchAggregateArgs>): Prisma.PrismaPromise<GetAgentResearchAggregateType<T>>
+
+    /**
+     * Group by AgentResearch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentResearchGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AgentResearchGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AgentResearchGroupByArgs['orderBy'] }
+        : { orderBy?: AgentResearchGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AgentResearchGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAgentResearchGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AgentResearch model
+   */
+  readonly fields: AgentResearchFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AgentResearch.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AgentResearchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    business<T extends BusinessDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BusinessDefaultArgs<ExtArgs>>): Prisma__BusinessClient<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AgentResearch model
+   */
+  interface AgentResearchFieldRefs {
+    readonly id: FieldRef<"AgentResearch", 'String'>
+    readonly businessId: FieldRef<"AgentResearch", 'String'>
+    readonly status: FieldRef<"AgentResearch", 'ResearchStatus'>
+    readonly websiteExists: FieldRef<"AgentResearch", 'Boolean'>
+    readonly researchData: FieldRef<"AgentResearch", 'Json'>
+    readonly error: FieldRef<"AgentResearch", 'String'>
+    readonly createdAt: FieldRef<"AgentResearch", 'DateTime'>
+    readonly updatedAt: FieldRef<"AgentResearch", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AgentResearch findUnique
+   */
+  export type AgentResearchFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentResearch to fetch.
+     */
+    where: AgentResearchWhereUniqueInput
+  }
+
+  /**
+   * AgentResearch findUniqueOrThrow
+   */
+  export type AgentResearchFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentResearch to fetch.
+     */
+    where: AgentResearchWhereUniqueInput
+  }
+
+  /**
+   * AgentResearch findFirst
+   */
+  export type AgentResearchFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentResearch to fetch.
+     */
+    where?: AgentResearchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AgentResearches to fetch.
+     */
+    orderBy?: AgentResearchOrderByWithRelationInput | AgentResearchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AgentResearches.
+     */
+    cursor?: AgentResearchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AgentResearches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AgentResearches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AgentResearches.
+     */
+    distinct?: AgentResearchScalarFieldEnum | AgentResearchScalarFieldEnum[]
+  }
+
+  /**
+   * AgentResearch findFirstOrThrow
+   */
+  export type AgentResearchFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentResearch to fetch.
+     */
+    where?: AgentResearchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AgentResearches to fetch.
+     */
+    orderBy?: AgentResearchOrderByWithRelationInput | AgentResearchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AgentResearches.
+     */
+    cursor?: AgentResearchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AgentResearches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AgentResearches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AgentResearches.
+     */
+    distinct?: AgentResearchScalarFieldEnum | AgentResearchScalarFieldEnum[]
+  }
+
+  /**
+   * AgentResearch findMany
+   */
+  export type AgentResearchFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentResearches to fetch.
+     */
+    where?: AgentResearchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AgentResearches to fetch.
+     */
+    orderBy?: AgentResearchOrderByWithRelationInput | AgentResearchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AgentResearches.
+     */
+    cursor?: AgentResearchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AgentResearches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AgentResearches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AgentResearches.
+     */
+    distinct?: AgentResearchScalarFieldEnum | AgentResearchScalarFieldEnum[]
+  }
+
+  /**
+   * AgentResearch create
+   */
+  export type AgentResearchCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AgentResearch.
+     */
+    data: XOR<AgentResearchCreateInput, AgentResearchUncheckedCreateInput>
+  }
+
+  /**
+   * AgentResearch createMany
+   */
+  export type AgentResearchCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AgentResearches.
+     */
+    data: AgentResearchCreateManyInput | AgentResearchCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AgentResearch createManyAndReturn
+   */
+  export type AgentResearchCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * The data used to create many AgentResearches.
+     */
+    data: AgentResearchCreateManyInput | AgentResearchCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AgentResearch update
+   */
+  export type AgentResearchUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AgentResearch.
+     */
+    data: XOR<AgentResearchUpdateInput, AgentResearchUncheckedUpdateInput>
+    /**
+     * Choose, which AgentResearch to update.
+     */
+    where: AgentResearchWhereUniqueInput
+  }
+
+  /**
+   * AgentResearch updateMany
+   */
+  export type AgentResearchUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AgentResearches.
+     */
+    data: XOR<AgentResearchUpdateManyMutationInput, AgentResearchUncheckedUpdateManyInput>
+    /**
+     * Filter which AgentResearches to update
+     */
+    where?: AgentResearchWhereInput
+    /**
+     * Limit how many AgentResearches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AgentResearch updateManyAndReturn
+   */
+  export type AgentResearchUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * The data used to update AgentResearches.
+     */
+    data: XOR<AgentResearchUpdateManyMutationInput, AgentResearchUncheckedUpdateManyInput>
+    /**
+     * Filter which AgentResearches to update
+     */
+    where?: AgentResearchWhereInput
+    /**
+     * Limit how many AgentResearches to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AgentResearch upsert
+   */
+  export type AgentResearchUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AgentResearch to update in case it exists.
+     */
+    where: AgentResearchWhereUniqueInput
+    /**
+     * In case the AgentResearch found by the `where` argument doesn't exist, create a new AgentResearch with this data.
+     */
+    create: XOR<AgentResearchCreateInput, AgentResearchUncheckedCreateInput>
+    /**
+     * In case the AgentResearch was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AgentResearchUpdateInput, AgentResearchUncheckedUpdateInput>
+  }
+
+  /**
+   * AgentResearch delete
+   */
+  export type AgentResearchDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    /**
+     * Filter which AgentResearch to delete.
+     */
+    where: AgentResearchWhereUniqueInput
+  }
+
+  /**
+   * AgentResearch deleteMany
+   */
+  export type AgentResearchDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AgentResearches to delete
+     */
+    where?: AgentResearchWhereInput
+    /**
+     * Limit how many AgentResearches to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AgentResearch without action
+   */
+  export type AgentResearchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -3355,6 +4595,20 @@ export namespace Prisma {
   };
 
   export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
+
+
+  export const AgentResearchScalarFieldEnum: {
+    id: 'id',
+    businessId: 'businessId',
+    status: 'status',
+    websiteExists: 'websiteExists',
+    researchData: 'researchData',
+    error: 'error',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AgentResearchScalarFieldEnum = (typeof AgentResearchScalarFieldEnum)[keyof typeof AgentResearchScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -3460,6 +4714,27 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ResearchStatus'
+   */
+  export type EnumResearchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResearchStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ResearchStatus[]'
+   */
+  export type ListEnumResearchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResearchStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -3494,6 +4769,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Business"> | Date | string
     updatedAt?: DateTimeFilter<"Business"> | Date | string
     reports?: ReportListRelationFilter
+    agentResearches?: AgentResearchListRelationFilter
   }
 
   export type BusinessOrderByWithRelationInput = {
@@ -3511,6 +4787,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     reports?: ReportOrderByRelationAggregateInput
+    agentResearches?: AgentResearchOrderByRelationAggregateInput
   }
 
   export type BusinessWhereUniqueInput = Prisma.AtLeast<{
@@ -3531,6 +4808,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Business"> | Date | string
     updatedAt?: DateTimeFilter<"Business"> | Date | string
     reports?: ReportListRelationFilter
+    agentResearches?: AgentResearchListRelationFilter
   }, "id" | "placeId">
 
   export type BusinessOrderByWithAggregationInput = {
@@ -3641,6 +4919,76 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Report"> | Date | string
   }
 
+  export type AgentResearchWhereInput = {
+    AND?: AgentResearchWhereInput | AgentResearchWhereInput[]
+    OR?: AgentResearchWhereInput[]
+    NOT?: AgentResearchWhereInput | AgentResearchWhereInput[]
+    id?: StringFilter<"AgentResearch"> | string
+    businessId?: StringFilter<"AgentResearch"> | string
+    status?: EnumResearchStatusFilter<"AgentResearch"> | $Enums.ResearchStatus
+    websiteExists?: BoolNullableFilter<"AgentResearch"> | boolean | null
+    researchData?: JsonNullableFilter<"AgentResearch">
+    error?: StringNullableFilter<"AgentResearch"> | string | null
+    createdAt?: DateTimeFilter<"AgentResearch"> | Date | string
+    updatedAt?: DateTimeFilter<"AgentResearch"> | Date | string
+    business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
+  }
+
+  export type AgentResearchOrderByWithRelationInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    status?: SortOrder
+    websiteExists?: SortOrderInput | SortOrder
+    researchData?: SortOrderInput | SortOrder
+    error?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    business?: BusinessOrderByWithRelationInput
+  }
+
+  export type AgentResearchWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AgentResearchWhereInput | AgentResearchWhereInput[]
+    OR?: AgentResearchWhereInput[]
+    NOT?: AgentResearchWhereInput | AgentResearchWhereInput[]
+    businessId?: StringFilter<"AgentResearch"> | string
+    status?: EnumResearchStatusFilter<"AgentResearch"> | $Enums.ResearchStatus
+    websiteExists?: BoolNullableFilter<"AgentResearch"> | boolean | null
+    researchData?: JsonNullableFilter<"AgentResearch">
+    error?: StringNullableFilter<"AgentResearch"> | string | null
+    createdAt?: DateTimeFilter<"AgentResearch"> | Date | string
+    updatedAt?: DateTimeFilter<"AgentResearch"> | Date | string
+    business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
+  }, "id">
+
+  export type AgentResearchOrderByWithAggregationInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    status?: SortOrder
+    websiteExists?: SortOrderInput | SortOrder
+    researchData?: SortOrderInput | SortOrder
+    error?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AgentResearchCountOrderByAggregateInput
+    _max?: AgentResearchMaxOrderByAggregateInput
+    _min?: AgentResearchMinOrderByAggregateInput
+  }
+
+  export type AgentResearchScalarWhereWithAggregatesInput = {
+    AND?: AgentResearchScalarWhereWithAggregatesInput | AgentResearchScalarWhereWithAggregatesInput[]
+    OR?: AgentResearchScalarWhereWithAggregatesInput[]
+    NOT?: AgentResearchScalarWhereWithAggregatesInput | AgentResearchScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AgentResearch"> | string
+    businessId?: StringWithAggregatesFilter<"AgentResearch"> | string
+    status?: EnumResearchStatusWithAggregatesFilter<"AgentResearch"> | $Enums.ResearchStatus
+    websiteExists?: BoolNullableWithAggregatesFilter<"AgentResearch"> | boolean | null
+    researchData?: JsonNullableWithAggregatesFilter<"AgentResearch">
+    error?: StringNullableWithAggregatesFilter<"AgentResearch"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AgentResearch"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AgentResearch"> | Date | string
+  }
+
   export type BusinessCreateInput = {
     id?: string
     placeId?: string | null
@@ -3656,6 +5004,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     reports?: ReportCreateNestedManyWithoutBusinessInput
+    agentResearches?: AgentResearchCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessUncheckedCreateInput = {
@@ -3673,6 +5022,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     reports?: ReportUncheckedCreateNestedManyWithoutBusinessInput
+    agentResearches?: AgentResearchUncheckedCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessUpdateInput = {
@@ -3690,6 +5040,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reports?: ReportUpdateManyWithoutBusinessNestedInput
+    agentResearches?: AgentResearchUpdateManyWithoutBusinessNestedInput
   }
 
   export type BusinessUncheckedUpdateInput = {
@@ -3707,6 +5058,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reports?: ReportUncheckedUpdateManyWithoutBusinessNestedInput
+    agentResearches?: AgentResearchUncheckedUpdateManyWithoutBusinessNestedInput
   }
 
   export type BusinessCreateManyInput = {
@@ -3833,6 +5185,82 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AgentResearchCreateInput = {
+    id?: string
+    status?: $Enums.ResearchStatus
+    websiteExists?: boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    business: BusinessCreateNestedOneWithoutAgentResearchesInput
+  }
+
+  export type AgentResearchUncheckedCreateInput = {
+    id?: string
+    businessId: string
+    status?: $Enums.ResearchStatus
+    websiteExists?: boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AgentResearchUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResearchStatusFieldUpdateOperationsInput | $Enums.ResearchStatus
+    websiteExists?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    business?: BusinessUpdateOneRequiredWithoutAgentResearchesNestedInput
+  }
+
+  export type AgentResearchUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    businessId?: StringFieldUpdateOperationsInput | string
+    status?: EnumResearchStatusFieldUpdateOperationsInput | $Enums.ResearchStatus
+    websiteExists?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AgentResearchCreateManyInput = {
+    id?: string
+    businessId: string
+    status?: $Enums.ResearchStatus
+    websiteExists?: boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AgentResearchUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResearchStatusFieldUpdateOperationsInput | $Enums.ResearchStatus
+    websiteExists?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AgentResearchUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    businessId?: StringFieldUpdateOperationsInput | string
+    status?: EnumResearchStatusFieldUpdateOperationsInput | $Enums.ResearchStatus
+    websiteExists?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -3880,12 +5308,22 @@ export namespace Prisma {
     none?: ReportWhereInput
   }
 
+  export type AgentResearchListRelationFilter = {
+    every?: AgentResearchWhereInput
+    some?: AgentResearchWhereInput
+    none?: AgentResearchWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
   }
 
   export type ReportOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AgentResearchOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -4089,6 +5527,67 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
+  export type EnumResearchStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResearchStatus | EnumResearchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ResearchStatus[] | ListEnumResearchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResearchStatus[] | ListEnumResearchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumResearchStatusFilter<$PrismaModel> | $Enums.ResearchStatus
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type AgentResearchCountOrderByAggregateInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    status?: SortOrder
+    websiteExists?: SortOrder
+    researchData?: SortOrder
+    error?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AgentResearchMaxOrderByAggregateInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    status?: SortOrder
+    websiteExists?: SortOrder
+    error?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AgentResearchMinOrderByAggregateInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    status?: SortOrder
+    websiteExists?: SortOrder
+    error?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumResearchStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResearchStatus | EnumResearchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ResearchStatus[] | ListEnumResearchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResearchStatus[] | ListEnumResearchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumResearchStatusWithAggregatesFilter<$PrismaModel> | $Enums.ResearchStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumResearchStatusFilter<$PrismaModel>
+    _max?: NestedEnumResearchStatusFilter<$PrismaModel>
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
   export type ReportCreateNestedManyWithoutBusinessInput = {
     create?: XOR<ReportCreateWithoutBusinessInput, ReportUncheckedCreateWithoutBusinessInput> | ReportCreateWithoutBusinessInput[] | ReportUncheckedCreateWithoutBusinessInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutBusinessInput | ReportCreateOrConnectWithoutBusinessInput[]
@@ -4096,11 +5595,25 @@ export namespace Prisma {
     connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
   }
 
+  export type AgentResearchCreateNestedManyWithoutBusinessInput = {
+    create?: XOR<AgentResearchCreateWithoutBusinessInput, AgentResearchUncheckedCreateWithoutBusinessInput> | AgentResearchCreateWithoutBusinessInput[] | AgentResearchUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: AgentResearchCreateOrConnectWithoutBusinessInput | AgentResearchCreateOrConnectWithoutBusinessInput[]
+    createMany?: AgentResearchCreateManyBusinessInputEnvelope
+    connect?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+  }
+
   export type ReportUncheckedCreateNestedManyWithoutBusinessInput = {
     create?: XOR<ReportCreateWithoutBusinessInput, ReportUncheckedCreateWithoutBusinessInput> | ReportCreateWithoutBusinessInput[] | ReportUncheckedCreateWithoutBusinessInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutBusinessInput | ReportCreateOrConnectWithoutBusinessInput[]
     createMany?: ReportCreateManyBusinessInputEnvelope
     connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
+  export type AgentResearchUncheckedCreateNestedManyWithoutBusinessInput = {
+    create?: XOR<AgentResearchCreateWithoutBusinessInput, AgentResearchUncheckedCreateWithoutBusinessInput> | AgentResearchCreateWithoutBusinessInput[] | AgentResearchUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: AgentResearchCreateOrConnectWithoutBusinessInput | AgentResearchCreateOrConnectWithoutBusinessInput[]
+    createMany?: AgentResearchCreateManyBusinessInputEnvelope
+    connect?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -4129,6 +5642,20 @@ export namespace Prisma {
     deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
   }
 
+  export type AgentResearchUpdateManyWithoutBusinessNestedInput = {
+    create?: XOR<AgentResearchCreateWithoutBusinessInput, AgentResearchUncheckedCreateWithoutBusinessInput> | AgentResearchCreateWithoutBusinessInput[] | AgentResearchUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: AgentResearchCreateOrConnectWithoutBusinessInput | AgentResearchCreateOrConnectWithoutBusinessInput[]
+    upsert?: AgentResearchUpsertWithWhereUniqueWithoutBusinessInput | AgentResearchUpsertWithWhereUniqueWithoutBusinessInput[]
+    createMany?: AgentResearchCreateManyBusinessInputEnvelope
+    set?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+    disconnect?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+    delete?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+    connect?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+    update?: AgentResearchUpdateWithWhereUniqueWithoutBusinessInput | AgentResearchUpdateWithWhereUniqueWithoutBusinessInput[]
+    updateMany?: AgentResearchUpdateManyWithWhereWithoutBusinessInput | AgentResearchUpdateManyWithWhereWithoutBusinessInput[]
+    deleteMany?: AgentResearchScalarWhereInput | AgentResearchScalarWhereInput[]
+  }
+
   export type ReportUncheckedUpdateManyWithoutBusinessNestedInput = {
     create?: XOR<ReportCreateWithoutBusinessInput, ReportUncheckedCreateWithoutBusinessInput> | ReportCreateWithoutBusinessInput[] | ReportUncheckedCreateWithoutBusinessInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutBusinessInput | ReportCreateOrConnectWithoutBusinessInput[]
@@ -4141,6 +5668,20 @@ export namespace Prisma {
     update?: ReportUpdateWithWhereUniqueWithoutBusinessInput | ReportUpdateWithWhereUniqueWithoutBusinessInput[]
     updateMany?: ReportUpdateManyWithWhereWithoutBusinessInput | ReportUpdateManyWithWhereWithoutBusinessInput[]
     deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
+  }
+
+  export type AgentResearchUncheckedUpdateManyWithoutBusinessNestedInput = {
+    create?: XOR<AgentResearchCreateWithoutBusinessInput, AgentResearchUncheckedCreateWithoutBusinessInput> | AgentResearchCreateWithoutBusinessInput[] | AgentResearchUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: AgentResearchCreateOrConnectWithoutBusinessInput | AgentResearchCreateOrConnectWithoutBusinessInput[]
+    upsert?: AgentResearchUpsertWithWhereUniqueWithoutBusinessInput | AgentResearchUpsertWithWhereUniqueWithoutBusinessInput[]
+    createMany?: AgentResearchCreateManyBusinessInputEnvelope
+    set?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+    disconnect?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+    delete?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+    connect?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+    update?: AgentResearchUpdateWithWhereUniqueWithoutBusinessInput | AgentResearchUpdateWithWhereUniqueWithoutBusinessInput[]
+    updateMany?: AgentResearchUpdateManyWithWhereWithoutBusinessInput | AgentResearchUpdateManyWithWhereWithoutBusinessInput[]
+    deleteMany?: AgentResearchScalarWhereInput | AgentResearchScalarWhereInput[]
   }
 
   export type BusinessCreateNestedOneWithoutReportsInput = {
@@ -4159,6 +5700,28 @@ export namespace Prisma {
     upsert?: BusinessUpsertWithoutReportsInput
     connect?: BusinessWhereUniqueInput
     update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutReportsInput, BusinessUpdateWithoutReportsInput>, BusinessUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type BusinessCreateNestedOneWithoutAgentResearchesInput = {
+    create?: XOR<BusinessCreateWithoutAgentResearchesInput, BusinessUncheckedCreateWithoutAgentResearchesInput>
+    connectOrCreate?: BusinessCreateOrConnectWithoutAgentResearchesInput
+    connect?: BusinessWhereUniqueInput
+  }
+
+  export type EnumResearchStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ResearchStatus
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
+  export type BusinessUpdateOneRequiredWithoutAgentResearchesNestedInput = {
+    create?: XOR<BusinessCreateWithoutAgentResearchesInput, BusinessUncheckedCreateWithoutAgentResearchesInput>
+    connectOrCreate?: BusinessCreateOrConnectWithoutAgentResearchesInput
+    upsert?: BusinessUpsertWithoutAgentResearchesInput
+    connect?: BusinessWhereUniqueInput
+    update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutAgentResearchesInput, BusinessUpdateWithoutAgentResearchesInput>, BusinessUncheckedUpdateWithoutAgentResearchesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -4310,6 +5873,36 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumResearchStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResearchStatus | EnumResearchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ResearchStatus[] | ListEnumResearchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResearchStatus[] | ListEnumResearchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumResearchStatusFilter<$PrismaModel> | $Enums.ResearchStatus
+  }
+
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type NestedEnumResearchStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResearchStatus | EnumResearchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ResearchStatus[] | ListEnumResearchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResearchStatus[] | ListEnumResearchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumResearchStatusWithAggregatesFilter<$PrismaModel> | $Enums.ResearchStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumResearchStatusFilter<$PrismaModel>
+    _max?: NestedEnumResearchStatusFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
   export type ReportCreateWithoutBusinessInput = {
     id?: string
     status?: $Enums.ReportStatus
@@ -4337,6 +5930,36 @@ export namespace Prisma {
 
   export type ReportCreateManyBusinessInputEnvelope = {
     data: ReportCreateManyBusinessInput | ReportCreateManyBusinessInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AgentResearchCreateWithoutBusinessInput = {
+    id?: string
+    status?: $Enums.ResearchStatus
+    websiteExists?: boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AgentResearchUncheckedCreateWithoutBusinessInput = {
+    id?: string
+    status?: $Enums.ResearchStatus
+    websiteExists?: boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AgentResearchCreateOrConnectWithoutBusinessInput = {
+    where: AgentResearchWhereUniqueInput
+    create: XOR<AgentResearchCreateWithoutBusinessInput, AgentResearchUncheckedCreateWithoutBusinessInput>
+  }
+
+  export type AgentResearchCreateManyBusinessInputEnvelope = {
+    data: AgentResearchCreateManyBusinessInput | AgentResearchCreateManyBusinessInput[]
     skipDuplicates?: boolean
   }
 
@@ -4370,6 +5993,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Report"> | Date | string
   }
 
+  export type AgentResearchUpsertWithWhereUniqueWithoutBusinessInput = {
+    where: AgentResearchWhereUniqueInput
+    update: XOR<AgentResearchUpdateWithoutBusinessInput, AgentResearchUncheckedUpdateWithoutBusinessInput>
+    create: XOR<AgentResearchCreateWithoutBusinessInput, AgentResearchUncheckedCreateWithoutBusinessInput>
+  }
+
+  export type AgentResearchUpdateWithWhereUniqueWithoutBusinessInput = {
+    where: AgentResearchWhereUniqueInput
+    data: XOR<AgentResearchUpdateWithoutBusinessInput, AgentResearchUncheckedUpdateWithoutBusinessInput>
+  }
+
+  export type AgentResearchUpdateManyWithWhereWithoutBusinessInput = {
+    where: AgentResearchScalarWhereInput
+    data: XOR<AgentResearchUpdateManyMutationInput, AgentResearchUncheckedUpdateManyWithoutBusinessInput>
+  }
+
+  export type AgentResearchScalarWhereInput = {
+    AND?: AgentResearchScalarWhereInput | AgentResearchScalarWhereInput[]
+    OR?: AgentResearchScalarWhereInput[]
+    NOT?: AgentResearchScalarWhereInput | AgentResearchScalarWhereInput[]
+    id?: StringFilter<"AgentResearch"> | string
+    businessId?: StringFilter<"AgentResearch"> | string
+    status?: EnumResearchStatusFilter<"AgentResearch"> | $Enums.ResearchStatus
+    websiteExists?: BoolNullableFilter<"AgentResearch"> | boolean | null
+    researchData?: JsonNullableFilter<"AgentResearch">
+    error?: StringNullableFilter<"AgentResearch"> | string | null
+    createdAt?: DateTimeFilter<"AgentResearch"> | Date | string
+    updatedAt?: DateTimeFilter<"AgentResearch"> | Date | string
+  }
+
   export type BusinessCreateWithoutReportsInput = {
     id?: string
     placeId?: string | null
@@ -4384,6 +6037,7 @@ export namespace Prisma {
     googleMapsUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    agentResearches?: AgentResearchCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessUncheckedCreateWithoutReportsInput = {
@@ -4400,6 +6054,7 @@ export namespace Prisma {
     googleMapsUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    agentResearches?: AgentResearchUncheckedCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessCreateOrConnectWithoutReportsInput = {
@@ -4432,6 +6087,7 @@ export namespace Prisma {
     googleMapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agentResearches?: AgentResearchUpdateManyWithoutBusinessNestedInput
   }
 
   export type BusinessUncheckedUpdateWithoutReportsInput = {
@@ -4448,6 +6104,91 @@ export namespace Prisma {
     googleMapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agentResearches?: AgentResearchUncheckedUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type BusinessCreateWithoutAgentResearchesInput = {
+    id?: string
+    placeId?: string | null
+    name: string
+    address?: string | null
+    phone?: string | null
+    email?: string | null
+    website?: string | null
+    category?: string | null
+    searchedCategory?: string | null
+    city?: string | null
+    googleMapsUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reports?: ReportCreateNestedManyWithoutBusinessInput
+  }
+
+  export type BusinessUncheckedCreateWithoutAgentResearchesInput = {
+    id?: string
+    placeId?: string | null
+    name: string
+    address?: string | null
+    phone?: string | null
+    email?: string | null
+    website?: string | null
+    category?: string | null
+    searchedCategory?: string | null
+    city?: string | null
+    googleMapsUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reports?: ReportUncheckedCreateNestedManyWithoutBusinessInput
+  }
+
+  export type BusinessCreateOrConnectWithoutAgentResearchesInput = {
+    where: BusinessWhereUniqueInput
+    create: XOR<BusinessCreateWithoutAgentResearchesInput, BusinessUncheckedCreateWithoutAgentResearchesInput>
+  }
+
+  export type BusinessUpsertWithoutAgentResearchesInput = {
+    update: XOR<BusinessUpdateWithoutAgentResearchesInput, BusinessUncheckedUpdateWithoutAgentResearchesInput>
+    create: XOR<BusinessCreateWithoutAgentResearchesInput, BusinessUncheckedCreateWithoutAgentResearchesInput>
+    where?: BusinessWhereInput
+  }
+
+  export type BusinessUpdateToOneWithWhereWithoutAgentResearchesInput = {
+    where?: BusinessWhereInput
+    data: XOR<BusinessUpdateWithoutAgentResearchesInput, BusinessUncheckedUpdateWithoutAgentResearchesInput>
+  }
+
+  export type BusinessUpdateWithoutAgentResearchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    placeId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    searchedCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    googleMapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reports?: ReportUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type BusinessUncheckedUpdateWithoutAgentResearchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    placeId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    searchedCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    googleMapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reports?: ReportUncheckedUpdateManyWithoutBusinessNestedInput
   }
 
   export type ReportCreateManyBusinessInput = {
@@ -4455,6 +6196,16 @@ export namespace Prisma {
     status?: $Enums.ReportStatus
     reportData?: NullableJsonNullValueInput | InputJsonValue
     pdfUrl?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AgentResearchCreateManyBusinessInput = {
+    id?: string
+    status?: $Enums.ResearchStatus
+    websiteExists?: boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
     error?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -4485,6 +6236,36 @@ export namespace Prisma {
     status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
     reportData?: NullableJsonNullValueInput | InputJsonValue
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AgentResearchUpdateWithoutBusinessInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResearchStatusFieldUpdateOperationsInput | $Enums.ResearchStatus
+    websiteExists?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AgentResearchUncheckedUpdateWithoutBusinessInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResearchStatusFieldUpdateOperationsInput | $Enums.ResearchStatus
+    websiteExists?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AgentResearchUncheckedUpdateManyWithoutBusinessInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResearchStatusFieldUpdateOperationsInput | $Enums.ResearchStatus
+    websiteExists?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
     error?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

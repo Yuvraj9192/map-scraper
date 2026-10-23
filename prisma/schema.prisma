@@ -20,6 +20,7 @@ model Business {
   city             String?
   googleMapsUrl    String?
   reports          Report[]
+  agentResearches  AgentResearch[]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -49,4 +50,34 @@ model Report {
 
   @@index([businessId])
   @@index([status])
+}
+
+
+// research model schema
+
+
+enum ResearchStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+model AgentResearch {
+  id         String         @id @default(cuid())
+  businessId String
+  status     ResearchStatus @default(PENDING)
+
+  websiteExists Boolean?
+  researchData  Json?
+  error         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([status])
+  @@index([createdAt])
 }

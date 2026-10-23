@@ -184,8 +184,244 @@ async function fetchHtml(inputUrl) {
   throw new Error("Unable to fetch website");
 }
 
+function extractBranding($, pageUrl) {
+  const resolveUrl = (value) => {
+    if (!value) return null;
+
+    try {
+      const url = new URL(value, pageUrl);
+
+      return ["http:", "https:"].includes(url.protocol)
+        ? url.href
+        : null;
+    } catch {
+      return null;
+    }
+  };
+
+  // Detect logo, including common lazy-loaded image attributes.
+  const logoElement = $(
+    [
+      'header img[class*="logo" i]',
+      'header img[id*="logo" i]',
+      '[class*="logo" i] img',
+      '[id*="logo" i] img',
+      'header a img',
+      'img[class*="logo" i]',
+      'img[id*="logo" i]',
+    ].join(", ")
+  ).first();
+
+  const logo = resolveUrl(
+    logoElement.attr("src") ||
+    logoElement.attr("data-src") ||
+    logoElement.attr("data-lazy-src") ||
+    logoElement.attr("srcset")?.split(",")[0]?.trim().split(/\s+/)[0]
+  );
+
+  const favicon = resolveUrl(
+    $('link[rel~="icon"]').first().attr("href") ||
+    $('link[rel="shortcut icon"]').attr("href")
+  );
+
+  const themeColor =
+    $('meta[name="theme-color"]').attr("content")?.trim() || null;
+
+  const openGraphImage = resolveUrl(
+    $('meta[property="og:image"]').attr("content")
+  );
+
+  const colors = new Set();
+  const fonts = new Set();
+
+  const addColors = (text = "") => {
+    // CSS hexadecimal colors.
+    const hexMatches =
+      text.match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
+
+    for (const color of hexMatches) {
+      if (colors.size >= 100) break;
+
+      colors.add(color.toUpperCase());
+    }
+
+    // CSS rgb(), rgba(), hsl(), and hsla() colors.
+    const functionalMatches =
+      text.match(
+        /\b(?:rgba?|hsla?)\(\s*[^)]{1,80}\)/gi
+      ) ?? [];
+
+    for (const color of functionalMatches) {
+      if (colors.size >= 100) break;
+
+      colors.add(color.trim());
+    }
+
+    // Common named brand colors used directly in CSS.
+    const namedColors =
+      text.match(
+        /(?:^|[;{]\s*)(?:color|background(?:-color)?|border-color)\s*:\s*(orange|white|black|red|blue|green|purple|pink|yellow|gray|grey)\b/gi
+      ) ?? [];
+
+    for (const entry of namedColors) {
+      const match = entry.match(
+        /\b(orange|white|black|red|blue|green|purple|pink|yellow|gray|grey)\b/i
+      );
+
+      if (match && colors.size < 100) {
+        colors.add(match[1].toLowerCase());
+      }
+    }
+  };
+
+  const addFonts = (text = "") => {
+    const matches =
+      text.match(/font-family\s*:\s*([^;}]+)/gi) ?? [];
+
+    for (const match of matches) {
+      const font = match
+        .split(":")
+        .slice(1)
+        .join(":")
+        .replace(/!important/gi, "")
+        .trim();
+
+      if (font && fonts.size < 20) {
+        fonts.add(font);
+      }
+    }
+  };
+
+  // Inspect inline styles.
+  $("[style]").each((_, element) => {
+    const style = $(element).attr("style") ?? "";
+
+    addColors(style);
+    addFonts(style);
+  });
+
+  // Inspect embedded CSS, including CSS custom properties.
+  $("style").each((_, element) => {
+    const css = $(element).text().slice(0, 200_000);
+
+    addColors(css);
+    addFonts(css);
+  });
+
+  // Read CSS custom properties when declared inline on the root.
+  const rootStyle =
+    $("html").attr("style") ??
+    $("body").attr("style") ??
+    "";
+
+  const cssVariables = {};
+
+  for (const match of rootStyle.matchAll(
+    /(--[\w-]+)\s*:\s*([^;]+)/g
+  )) {
+    cssVariables[match[1]] = match[2].trim();
+  }
+
+  // Normalize named colors to hexadecimal for PDF compatibility.
+  const namedColorMap = {
+    orange: "#FFA500",
+    white: "#FFFFFF",
+    black: "#000000",
+    red: "#FF0000",
+    blue: "#0000FF",
+    green: "#008000",
+    purple: "#800080",
+    pink: "#FFC0CB",
+    yellow: "#FFFF00",
+    gray: "#808080",
+    grey: "#808080",
+  };
+
+  const normalizeColor = (value) => {
+    if (!value || typeof value !== "string") return null;
+
+    const trimmed = value.trim();
+
+    if (/^#[0-9a-f]{3}$/i.test(trimmed)) {
+      return (
+        "#" +
+        trimmed
+          .slice(1)
+          .split("")
+          .map((char) => char + char)
+          .join("")
+      ).toUpperCase();
+    }
+
+    if (/^#[0-9a-f]{6}$/i.test(trimmed)) {
+      return trimmed.toUpperCase();
+    }
+
+    return namedColorMap[trimmed.toLowerCase()] ?? null;
+  };
+
+  // Prefer a declared theme color. Otherwise select a detected
+  // non-neutral color from the inspected inline/embedded CSS.
+  const normalizedThemeColor = normalizeColor(themeColor);
+
+  const detectedColors = [...colors]
+    .map(normalizeColor)
+    .filter(Boolean);
+
+  const isNeutral = (color) =>
+    ["#FFFFFF", "#000000", "#808080"].includes(color);
+
+  const primaryColor =
+    normalizedThemeColor ??
+    detectedColors.find((color) => !isNeutral(color)) ??
+    null;
+
+  const secondaryColors = [
+    ...new Set(
+      detectedColors.filter(
+        (color) => color !== primaryColor
+      )
+    ),
+  ].slice(0, 4);
+
+  const typography = [...fonts][0] ?? null;
+
+  return {
+    // Existing fields
+    logo,
+    favicon,
+    openGraphImage,
+    themeColor,
+    colors: detectedColors,
+    fonts: [...fonts],
+
+    // Fields expected by reportPdf.js
+    logoUrl: logo,
+    faviconUrl: favicon,
+    primaryColor,
+    secondaryColors,
+    typography,
+
+    // Debug evidence
+    evidence: {
+      logoFoundInHtml: Boolean(logo),
+      faviconFoundInHtml: Boolean(favicon),
+      themeColorDeclared: Boolean(themeColor),
+      embeddedStylesInspected: $("style").length > 0,
+      inlineStylesInspected: $("[style]").length > 0,
+      detectedColorCount: detectedColors.length,
+      primaryColorSource: normalizedThemeColor
+        ? "meta theme-color"
+        : primaryColor
+          ? "inline or embedded CSS"
+          : "not detected",
+    },
+  };
+}
+
 function extractPage(html, pageUrl, status) {
   const $ = cheerio.load(html);
+  const branding = extractBranding($, pageUrl);
 
   const title = $("title").first().text().trim() || null;
   const description =
@@ -282,6 +518,7 @@ function extractPage(html, pageUrl, status) {
   return {
     url: pageUrl,
     status,
+    branding,
     title,
     metaDescription: description,
     canonicalUrl,
@@ -290,8 +527,12 @@ function extractPage(html, pageUrl, status) {
     links: links.slice(0, 150),
     images: {
       total: images.length,
-      withAlt: images.filter((image) => image.hasAlt && image.alt?.trim()).length,
-      withoutAlt: images.filter((image) => !image.hasAlt || !image.alt?.trim()).length,
+      withAlt: images.filter(
+        (image) => image.hasAlt && image.alt?.trim()
+      ).length,
+      withoutAlt: images.filter(
+        (image) => !image.hasAlt || !image.alt?.trim()
+      ).length,
       samples: images.slice(0, 30),
     },
     forms: forms.slice(0, 15),

@@ -1,6 +1,7 @@
 // import readline from "node:readline/promises";
 // import { stdin, stdout } from "node:process";
 import { categories } from "./data/categories.js";
+
 import { searchBusinesses } from "./services/googlePlaces.js";
 import { normalizeBusiness } from "./utils/normalizeBusiness.js";
 import { deduplicateBusinesses } from "./utils/deduplicate.js";

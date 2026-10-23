@@ -147,6 +147,17 @@ exports.Prisma.ReportScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AgentResearchScalarFieldEnum = {
+  id: 'id',
+  businessId: 'businessId',
+  status: 'status',
+  websiteExists: 'websiteExists',
+  researchData: 'researchData',
+  error: 'error',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -178,9 +189,17 @@ exports.ReportStatus = exports.$Enums.ReportStatus = {
   FAILED: 'FAILED'
 };
 
+exports.ResearchStatus = exports.$Enums.ResearchStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
 exports.Prisma.ModelName = {
   Business: 'Business',
-  Report: 'Report'
+  Report: 'Report',
+  AgentResearch: 'AgentResearch'
 };
 
 /**
