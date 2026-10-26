@@ -1,4 +1,5 @@
 import path from "node:path";
+import cors from "cors";
 import { fileURLToPath } from "node:url";
 import express from "express";
 import businessRoutes from "./routes/businessRoutes.js";
@@ -8,8 +9,10 @@ import researchRoutes from "./routes/researchRoutes.js";
 import { testDatabase, prisma } from "./lib/prisma.js";
 
 
+
 const app = express();
 app.use(express.json());
+app.use(cors())
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

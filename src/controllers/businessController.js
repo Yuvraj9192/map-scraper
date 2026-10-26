@@ -20,14 +20,14 @@ export async function getBusinesses(req, res) {
 
     const selectedCategories =
       !requestedCategory ||
-      requestedCategory.toLowerCase() === "all"
+        requestedCategory.toLowerCase() === "all"
         ? categories
         : [
-            categories.find(
-              (item) =>
-                item.toLowerCase() === requestedCategory.toLowerCase()
-            ) || requestedCategory,
-          ];
+          categories.find(
+            (item) =>
+              item.toLowerCase() === requestedCategory.toLowerCase()
+          ) || requestedCategory,
+        ];
 
     const allBusinesses = [];
     const failedCategories = [];
@@ -74,7 +74,7 @@ export async function getBusinesses(req, res) {
             normalizeBusiness(place, city, category)
           )
         );
-        
+
         // 4. Save this category's data before proceeding to the next category.
         const saveResults = await Promise.allSettled(
           normalized.map(async (business) => {
@@ -204,4 +204,208 @@ export async function getBusinesses(req, res) {
       });
     }
   }
+}
+
+
+
+export async function getBusinessById(req, res) {
+  try {
+    const { id } = req.params;
+
+    const business = await prisma.business.findUnique({
+      where: { id },
+      include: {
+        reports: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+        agentResearches: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+
+    if (!business) {
+      return res.status(404).json({
+        success: false,
+        message: "Business not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      business,
+    });
+  } catch (error) {
+    console.error("Failed to fetch business details:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch business details",
+      error: error.message || "Unknown error",
+    });
+  }
+}
+
+
+export async function getBusinessesFromDb(req, res) {
+  try {
+    const search = req.query.search?.trim();
+    const city = req.query.city?.trim();
+    const category = req.query.category?.trim();
+    const website = req.query.website?.trim().toLowerCase();
+
+    const page = Math.max(
+      1,
+      Number.parseInt(req.query.page, 10) || 1
+    );
+
+    const limit = Math.min(
+      100,
+      Math.max(1, Number.parseInt(req.query.limit, 10) || 50)
+    );
+
+    // Validate website filter.
+    if (
+      website &&
+      !["all", "missing", "existing"].includes(website)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          'Invalid website filter. Use "all", "missing", or "existing".',
+      });
+    }
+
+    const conditions = [];
+
+    // City filter.
+    if (city) {
+      conditions.push({
+        city: {
+          contains: city,
+          mode: "insensitive",
+        },
+      });
+    }
+
+    // Category filter.
+    if (category && category.toLowerCase() !== "all") {
+      conditions.push({
+        searchedCategory: {
+          equals: category,
+          mode: "insensitive",
+        },
+      });
+    }
+
+    // General search.
+    if (search) {
+      conditions.push({
+        OR: [
+          { name: { contains: search, mode: "insensitive" } },
+          { city: { contains: search, mode: "insensitive" } },
+          { category: { contains: search, mode: "insensitive" } },
+          {
+            searchedCategory: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          { address: { contains: search, mode: "insensitive" } },
+          { phone: { contains: search, mode: "insensitive" } },
+          { email: { contains: search, mode: "insensitive" } },
+        ],
+      });
+    }
+
+    // Businesses without a website.
+    if (website === "missing") {
+      conditions.push({
+        OR: [
+          { website: null },
+          { website: "" },
+        ],
+      });
+    }
+
+    // Businesses with a website.
+    if (website === "existing") {
+      conditions.push({
+        AND: [
+          { website: { not: null } },
+          { website: { not: "" } },
+        ],
+      });
+    }
+
+    // No filters means return all businesses.
+    const where =
+      conditions.length > 0
+        ? { AND: conditions }
+        : {};
+
+    const [businesses, total] = await Promise.all([
+      prisma.business.findMany({
+        where,
+        include: {
+          reports: {
+            orderBy: { createdAt: "desc" },
+            take: 1,
+            select: {
+              id: true,
+              status: true,
+              pdfUrl: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+          agentResearches: {
+            orderBy: { createdAt: "desc" },
+            take: 1,
+            select: {
+              id: true,
+              status: true,
+              websiteExists: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+
+      prisma.business.count({ where }),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      businesses,
+    });
+  } catch (error) {
+    console.error("Database business search failed:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load businesses from the database.",
+      error: error.message || "Unknown error",
+    });
+  }
+}
+
+
+export function getCategories(req, res) {
+  return res.status(200).json({
+    success: true,
+    categories,
+  });
 }
