@@ -8,21 +8,22 @@ datasource db {
 }
 
 model Business {
-  id               String   @id @default(cuid())
-  placeId          String?  @unique
-  name             String
-  address          String?
-  phone            String?
-  email            String?
-  website          String?
-  category         String?
-  searchedCategory String?
-  city             String?
-  googleMapsUrl    String?
-  reports          Report[]
-  agentResearches  AgentResearch[]
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id                String             @id @default(cuid())
+  placeId           String?            @unique
+  name              String
+  address           String?
+  phone             String?
+  email             String?
+  website           String?
+  category          String?
+  searchedCategory  String?
+  city              String?
+  googleMapsUrl     String?
+  reports           Report[]
+  agentResearches   AgentResearch[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  generatedWebsites GeneratedWebsite[]
 
   @@index([city])
   @@index([category])
@@ -52,9 +53,7 @@ model Report {
   @@index([status])
 }
 
-
 // research model schema
-
 
 enum ResearchStatus {
   PENDING
@@ -68,6 +67,8 @@ model AgentResearch {
   businessId String
   status     ResearchStatus @default(PENDING)
 
+  generatedWebsites GeneratedWebsite[]
+
   websiteExists Boolean?
   researchData  Json?
   error         String?
@@ -78,6 +79,39 @@ model AgentResearch {
   business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
   @@index([businessId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum GeneratedWebsiteStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+model GeneratedWebsite {
+  id                 String                 @id @default(cuid())
+  businessId         String
+  researchId         String?
+  status             GeneratedWebsiteStatus @default(PENDING)
+  websitePath        String
+  files              Json?
+  previewHtml        String?
+  summary            String?
+  error              String?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  deploymentUrl      String?
+  vercelDeploymentId String?
+  deploymentStatus   String?
+  deployedAt         DateTime?
+
+  business Business       @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  research AgentResearch? @relation(fields: [researchId], references: [id], onDelete: SetNull)
+
+  @@index([businessId])
+  @@index([researchId])
   @@index([status])
   @@index([createdAt])
 }

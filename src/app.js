@@ -6,6 +6,7 @@ import businessRoutes from "./routes/businessRoutes.js";
 import auditRoutes from "./routes/auditRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import researchRoutes from "./routes/researchRoutes.js";
+import websiteRoutes from "./routes/websiteRoutes.js";
 import { testDatabase, prisma } from "./lib/prisma.js";
 
 
@@ -23,7 +24,7 @@ app.use(
 );
 app.use("/api", reportRoutes);
 app.use("/api/research", researchRoutes);
-
+app.use("/api/websites", websiteRoutes);
 
 // Test the database when the application starts
 testDatabase();

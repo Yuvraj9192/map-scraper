@@ -28,6 +28,11 @@ export type Report = $Result.DefaultSelection<Prisma.$ReportPayload>
  * 
  */
 export type AgentResearch = $Result.DefaultSelection<Prisma.$AgentResearchPayload>
+/**
+ * Model GeneratedWebsite
+ * 
+ */
+export type GeneratedWebsite = $Result.DefaultSelection<Prisma.$GeneratedWebsitePayload>
 
 /**
  * Enums
@@ -51,6 +56,16 @@ export const ResearchStatus: {
 
 export type ResearchStatus = (typeof ResearchStatus)[keyof typeof ResearchStatus]
 
+
+export const GeneratedWebsiteStatus: {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+export type GeneratedWebsiteStatus = (typeof GeneratedWebsiteStatus)[keyof typeof GeneratedWebsiteStatus]
+
 }
 
 export type ReportStatus = $Enums.ReportStatus
@@ -60,6 +75,10 @@ export const ReportStatus: typeof $Enums.ReportStatus
 export type ResearchStatus = $Enums.ResearchStatus
 
 export const ResearchStatus: typeof $Enums.ResearchStatus
+
+export type GeneratedWebsiteStatus = $Enums.GeneratedWebsiteStatus
+
+export const GeneratedWebsiteStatus: typeof $Enums.GeneratedWebsiteStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -211,6 +230,16 @@ export class PrismaClient<
     * ```
     */
   get agentResearch(): Prisma.AgentResearchDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.generatedWebsite`: Exposes CRUD operations for the **GeneratedWebsite** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GeneratedWebsites
+    * const generatedWebsites = await prisma.generatedWebsite.findMany()
+    * ```
+    */
+  get generatedWebsite(): Prisma.GeneratedWebsiteDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -660,7 +689,8 @@ export namespace Prisma {
   export const ModelName: {
     Business: 'Business',
     Report: 'Report',
-    AgentResearch: 'AgentResearch'
+    AgentResearch: 'AgentResearch',
+    GeneratedWebsite: 'GeneratedWebsite'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -676,7 +706,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "business" | "report" | "agentResearch"
+      modelProps: "business" | "report" | "agentResearch" | "generatedWebsite"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -902,6 +932,80 @@ export namespace Prisma {
           }
         }
       }
+      GeneratedWebsite: {
+        payload: Prisma.$GeneratedWebsitePayload<ExtArgs>
+        fields: Prisma.GeneratedWebsiteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GeneratedWebsiteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GeneratedWebsiteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload>
+          }
+          findFirst: {
+            args: Prisma.GeneratedWebsiteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GeneratedWebsiteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload>
+          }
+          findMany: {
+            args: Prisma.GeneratedWebsiteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload>[]
+          }
+          create: {
+            args: Prisma.GeneratedWebsiteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload>
+          }
+          createMany: {
+            args: Prisma.GeneratedWebsiteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GeneratedWebsiteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload>[]
+          }
+          delete: {
+            args: Prisma.GeneratedWebsiteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload>
+          }
+          update: {
+            args: Prisma.GeneratedWebsiteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload>
+          }
+          deleteMany: {
+            args: Prisma.GeneratedWebsiteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GeneratedWebsiteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GeneratedWebsiteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload>[]
+          }
+          upsert: {
+            args: Prisma.GeneratedWebsiteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GeneratedWebsitePayload>
+          }
+          aggregate: {
+            args: Prisma.GeneratedWebsiteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGeneratedWebsite>
+          }
+          groupBy: {
+            args: Prisma.GeneratedWebsiteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GeneratedWebsiteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GeneratedWebsiteCountArgs<ExtArgs>
+            result: $Utils.Optional<GeneratedWebsiteCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1028,6 +1132,7 @@ export namespace Prisma {
     business?: BusinessOmit
     report?: ReportOmit
     agentResearch?: AgentResearchOmit
+    generatedWebsite?: GeneratedWebsiteOmit
   }
 
   /* Types for Logging */
@@ -1110,11 +1215,13 @@ export namespace Prisma {
   export type BusinessCountOutputType = {
     reports: number
     agentResearches: number
+    generatedWebsites: number
   }
 
   export type BusinessCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     reports?: boolean | BusinessCountOutputTypeCountReportsArgs
     agentResearches?: boolean | BusinessCountOutputTypeCountAgentResearchesArgs
+    generatedWebsites?: boolean | BusinessCountOutputTypeCountGeneratedWebsitesArgs
   }
 
   // Custom InputTypes
@@ -1140,6 +1247,44 @@ export namespace Prisma {
    */
   export type BusinessCountOutputTypeCountAgentResearchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AgentResearchWhereInput
+  }
+
+  /**
+   * BusinessCountOutputType without action
+   */
+  export type BusinessCountOutputTypeCountGeneratedWebsitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GeneratedWebsiteWhereInput
+  }
+
+
+  /**
+   * Count Type AgentResearchCountOutputType
+   */
+
+  export type AgentResearchCountOutputType = {
+    generatedWebsites: number
+  }
+
+  export type AgentResearchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    generatedWebsites?: boolean | AgentResearchCountOutputTypeCountGeneratedWebsitesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AgentResearchCountOutputType without action
+   */
+  export type AgentResearchCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearchCountOutputType
+     */
+    select?: AgentResearchCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AgentResearchCountOutputType without action
+   */
+  export type AgentResearchCountOutputTypeCountGeneratedWebsitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GeneratedWebsiteWhereInput
   }
 
 
@@ -1377,6 +1522,7 @@ export namespace Prisma {
     updatedAt?: boolean
     reports?: boolean | Business$reportsArgs<ExtArgs>
     agentResearches?: boolean | Business$agentResearchesArgs<ExtArgs>
+    generatedWebsites?: boolean | Business$generatedWebsitesArgs<ExtArgs>
     _count?: boolean | BusinessCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["business"]>
 
@@ -1432,6 +1578,7 @@ export namespace Prisma {
   export type BusinessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     reports?: boolean | Business$reportsArgs<ExtArgs>
     agentResearches?: boolean | Business$agentResearchesArgs<ExtArgs>
+    generatedWebsites?: boolean | Business$generatedWebsitesArgs<ExtArgs>
     _count?: boolean | BusinessCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BusinessIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1442,6 +1589,7 @@ export namespace Prisma {
     objects: {
       reports: Prisma.$ReportPayload<ExtArgs>[]
       agentResearches: Prisma.$AgentResearchPayload<ExtArgs>[]
+      generatedWebsites: Prisma.$GeneratedWebsitePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1853,6 +2001,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     reports<T extends Business$reportsArgs<ExtArgs> = {}>(args?: Subset<T, Business$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     agentResearches<T extends Business$agentResearchesArgs<ExtArgs> = {}>(args?: Subset<T, Business$agentResearchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    generatedWebsites<T extends Business$generatedWebsitesArgs<ExtArgs> = {}>(args?: Subset<T, Business$generatedWebsitesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2333,6 +2482,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AgentResearchScalarFieldEnum | AgentResearchScalarFieldEnum[]
+  }
+
+  /**
+   * Business.generatedWebsites
+   */
+  export type Business$generatedWebsitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    where?: GeneratedWebsiteWhereInput
+    orderBy?: GeneratedWebsiteOrderByWithRelationInput | GeneratedWebsiteOrderByWithRelationInput[]
+    cursor?: GeneratedWebsiteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GeneratedWebsiteScalarFieldEnum | GeneratedWebsiteScalarFieldEnum[]
   }
 
   /**
@@ -3636,7 +3809,9 @@ export namespace Prisma {
     error?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    generatedWebsites?: boolean | AgentResearch$generatedWebsitesArgs<ExtArgs>
     business?: boolean | BusinessDefaultArgs<ExtArgs>
+    _count?: boolean | AgentResearchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agentResearch"]>
 
   export type AgentResearchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3676,7 +3851,9 @@ export namespace Prisma {
 
   export type AgentResearchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "businessId" | "status" | "websiteExists" | "researchData" | "error" | "createdAt" | "updatedAt", ExtArgs["result"]["agentResearch"]>
   export type AgentResearchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    generatedWebsites?: boolean | AgentResearch$generatedWebsitesArgs<ExtArgs>
     business?: boolean | BusinessDefaultArgs<ExtArgs>
+    _count?: boolean | AgentResearchCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgentResearchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     business?: boolean | BusinessDefaultArgs<ExtArgs>
@@ -3688,6 +3865,7 @@ export namespace Prisma {
   export type $AgentResearchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AgentResearch"
     objects: {
+      generatedWebsites: Prisma.$GeneratedWebsitePayload<ExtArgs>[]
       business: Prisma.$BusinessPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -4093,6 +4271,7 @@ export namespace Prisma {
    */
   export interface Prisma__AgentResearchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    generatedWebsites<T extends AgentResearch$generatedWebsitesArgs<ExtArgs> = {}>(args?: Subset<T, AgentResearch$generatedWebsitesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     business<T extends BusinessDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BusinessDefaultArgs<ExtArgs>>): Prisma__BusinessClient<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4532,6 +4711,30 @@ export namespace Prisma {
   }
 
   /**
+   * AgentResearch.generatedWebsites
+   */
+  export type AgentResearch$generatedWebsitesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    where?: GeneratedWebsiteWhereInput
+    orderBy?: GeneratedWebsiteOrderByWithRelationInput | GeneratedWebsiteOrderByWithRelationInput[]
+    cursor?: GeneratedWebsiteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GeneratedWebsiteScalarFieldEnum | GeneratedWebsiteScalarFieldEnum[]
+  }
+
+  /**
    * AgentResearch without action
    */
   export type AgentResearchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4547,6 +4750,1222 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: AgentResearchInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GeneratedWebsite
+   */
+
+  export type AggregateGeneratedWebsite = {
+    _count: GeneratedWebsiteCountAggregateOutputType | null
+    _min: GeneratedWebsiteMinAggregateOutputType | null
+    _max: GeneratedWebsiteMaxAggregateOutputType | null
+  }
+
+  export type GeneratedWebsiteMinAggregateOutputType = {
+    id: string | null
+    businessId: string | null
+    researchId: string | null
+    status: $Enums.GeneratedWebsiteStatus | null
+    websitePath: string | null
+    previewHtml: string | null
+    summary: string | null
+    error: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deploymentUrl: string | null
+    vercelDeploymentId: string | null
+    deploymentStatus: string | null
+    deployedAt: Date | null
+  }
+
+  export type GeneratedWebsiteMaxAggregateOutputType = {
+    id: string | null
+    businessId: string | null
+    researchId: string | null
+    status: $Enums.GeneratedWebsiteStatus | null
+    websitePath: string | null
+    previewHtml: string | null
+    summary: string | null
+    error: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deploymentUrl: string | null
+    vercelDeploymentId: string | null
+    deploymentStatus: string | null
+    deployedAt: Date | null
+  }
+
+  export type GeneratedWebsiteCountAggregateOutputType = {
+    id: number
+    businessId: number
+    researchId: number
+    status: number
+    websitePath: number
+    files: number
+    previewHtml: number
+    summary: number
+    error: number
+    createdAt: number
+    updatedAt: number
+    deploymentUrl: number
+    vercelDeploymentId: number
+    deploymentStatus: number
+    deployedAt: number
+    _all: number
+  }
+
+
+  export type GeneratedWebsiteMinAggregateInputType = {
+    id?: true
+    businessId?: true
+    researchId?: true
+    status?: true
+    websitePath?: true
+    previewHtml?: true
+    summary?: true
+    error?: true
+    createdAt?: true
+    updatedAt?: true
+    deploymentUrl?: true
+    vercelDeploymentId?: true
+    deploymentStatus?: true
+    deployedAt?: true
+  }
+
+  export type GeneratedWebsiteMaxAggregateInputType = {
+    id?: true
+    businessId?: true
+    researchId?: true
+    status?: true
+    websitePath?: true
+    previewHtml?: true
+    summary?: true
+    error?: true
+    createdAt?: true
+    updatedAt?: true
+    deploymentUrl?: true
+    vercelDeploymentId?: true
+    deploymentStatus?: true
+    deployedAt?: true
+  }
+
+  export type GeneratedWebsiteCountAggregateInputType = {
+    id?: true
+    businessId?: true
+    researchId?: true
+    status?: true
+    websitePath?: true
+    files?: true
+    previewHtml?: true
+    summary?: true
+    error?: true
+    createdAt?: true
+    updatedAt?: true
+    deploymentUrl?: true
+    vercelDeploymentId?: true
+    deploymentStatus?: true
+    deployedAt?: true
+    _all?: true
+  }
+
+  export type GeneratedWebsiteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GeneratedWebsite to aggregate.
+     */
+    where?: GeneratedWebsiteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GeneratedWebsites to fetch.
+     */
+    orderBy?: GeneratedWebsiteOrderByWithRelationInput | GeneratedWebsiteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GeneratedWebsiteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GeneratedWebsites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GeneratedWebsites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GeneratedWebsites
+    **/
+    _count?: true | GeneratedWebsiteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GeneratedWebsiteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GeneratedWebsiteMaxAggregateInputType
+  }
+
+  export type GetGeneratedWebsiteAggregateType<T extends GeneratedWebsiteAggregateArgs> = {
+        [P in keyof T & keyof AggregateGeneratedWebsite]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGeneratedWebsite[P]>
+      : GetScalarType<T[P], AggregateGeneratedWebsite[P]>
+  }
+
+
+
+
+  export type GeneratedWebsiteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GeneratedWebsiteWhereInput
+    orderBy?: GeneratedWebsiteOrderByWithAggregationInput | GeneratedWebsiteOrderByWithAggregationInput[]
+    by: GeneratedWebsiteScalarFieldEnum[] | GeneratedWebsiteScalarFieldEnum
+    having?: GeneratedWebsiteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GeneratedWebsiteCountAggregateInputType | true
+    _min?: GeneratedWebsiteMinAggregateInputType
+    _max?: GeneratedWebsiteMaxAggregateInputType
+  }
+
+  export type GeneratedWebsiteGroupByOutputType = {
+    id: string
+    businessId: string
+    researchId: string | null
+    status: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files: JsonValue | null
+    previewHtml: string | null
+    summary: string | null
+    error: string | null
+    createdAt: Date
+    updatedAt: Date
+    deploymentUrl: string | null
+    vercelDeploymentId: string | null
+    deploymentStatus: string | null
+    deployedAt: Date | null
+    _count: GeneratedWebsiteCountAggregateOutputType | null
+    _min: GeneratedWebsiteMinAggregateOutputType | null
+    _max: GeneratedWebsiteMaxAggregateOutputType | null
+  }
+
+  type GetGeneratedWebsiteGroupByPayload<T extends GeneratedWebsiteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GeneratedWebsiteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GeneratedWebsiteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GeneratedWebsiteGroupByOutputType[P]>
+            : GetScalarType<T[P], GeneratedWebsiteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GeneratedWebsiteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    businessId?: boolean
+    researchId?: boolean
+    status?: boolean
+    websitePath?: boolean
+    files?: boolean
+    previewHtml?: boolean
+    summary?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deploymentUrl?: boolean
+    vercelDeploymentId?: boolean
+    deploymentStatus?: boolean
+    deployedAt?: boolean
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+    research?: boolean | GeneratedWebsite$researchArgs<ExtArgs>
+  }, ExtArgs["result"]["generatedWebsite"]>
+
+  export type GeneratedWebsiteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    businessId?: boolean
+    researchId?: boolean
+    status?: boolean
+    websitePath?: boolean
+    files?: boolean
+    previewHtml?: boolean
+    summary?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deploymentUrl?: boolean
+    vercelDeploymentId?: boolean
+    deploymentStatus?: boolean
+    deployedAt?: boolean
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+    research?: boolean | GeneratedWebsite$researchArgs<ExtArgs>
+  }, ExtArgs["result"]["generatedWebsite"]>
+
+  export type GeneratedWebsiteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    businessId?: boolean
+    researchId?: boolean
+    status?: boolean
+    websitePath?: boolean
+    files?: boolean
+    previewHtml?: boolean
+    summary?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deploymentUrl?: boolean
+    vercelDeploymentId?: boolean
+    deploymentStatus?: boolean
+    deployedAt?: boolean
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+    research?: boolean | GeneratedWebsite$researchArgs<ExtArgs>
+  }, ExtArgs["result"]["generatedWebsite"]>
+
+  export type GeneratedWebsiteSelectScalar = {
+    id?: boolean
+    businessId?: boolean
+    researchId?: boolean
+    status?: boolean
+    websitePath?: boolean
+    files?: boolean
+    previewHtml?: boolean
+    summary?: boolean
+    error?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deploymentUrl?: boolean
+    vercelDeploymentId?: boolean
+    deploymentStatus?: boolean
+    deployedAt?: boolean
+  }
+
+  export type GeneratedWebsiteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "businessId" | "researchId" | "status" | "websitePath" | "files" | "previewHtml" | "summary" | "error" | "createdAt" | "updatedAt" | "deploymentUrl" | "vercelDeploymentId" | "deploymentStatus" | "deployedAt", ExtArgs["result"]["generatedWebsite"]>
+  export type GeneratedWebsiteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+    research?: boolean | GeneratedWebsite$researchArgs<ExtArgs>
+  }
+  export type GeneratedWebsiteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+    research?: boolean | GeneratedWebsite$researchArgs<ExtArgs>
+  }
+  export type GeneratedWebsiteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+    research?: boolean | GeneratedWebsite$researchArgs<ExtArgs>
+  }
+
+  export type $GeneratedWebsitePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GeneratedWebsite"
+    objects: {
+      business: Prisma.$BusinessPayload<ExtArgs>
+      research: Prisma.$AgentResearchPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      businessId: string
+      researchId: string | null
+      status: $Enums.GeneratedWebsiteStatus
+      websitePath: string
+      files: Prisma.JsonValue | null
+      previewHtml: string | null
+      summary: string | null
+      error: string | null
+      createdAt: Date
+      updatedAt: Date
+      deploymentUrl: string | null
+      vercelDeploymentId: string | null
+      deploymentStatus: string | null
+      deployedAt: Date | null
+    }, ExtArgs["result"]["generatedWebsite"]>
+    composites: {}
+  }
+
+  type GeneratedWebsiteGetPayload<S extends boolean | null | undefined | GeneratedWebsiteDefaultArgs> = $Result.GetResult<Prisma.$GeneratedWebsitePayload, S>
+
+  type GeneratedWebsiteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GeneratedWebsiteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GeneratedWebsiteCountAggregateInputType | true
+    }
+
+  export interface GeneratedWebsiteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GeneratedWebsite'], meta: { name: 'GeneratedWebsite' } }
+    /**
+     * Find zero or one GeneratedWebsite that matches the filter.
+     * @param {GeneratedWebsiteFindUniqueArgs} args - Arguments to find a GeneratedWebsite
+     * @example
+     * // Get one GeneratedWebsite
+     * const generatedWebsite = await prisma.generatedWebsite.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GeneratedWebsiteFindUniqueArgs>(args: SelectSubset<T, GeneratedWebsiteFindUniqueArgs<ExtArgs>>): Prisma__GeneratedWebsiteClient<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GeneratedWebsite that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GeneratedWebsiteFindUniqueOrThrowArgs} args - Arguments to find a GeneratedWebsite
+     * @example
+     * // Get one GeneratedWebsite
+     * const generatedWebsite = await prisma.generatedWebsite.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GeneratedWebsiteFindUniqueOrThrowArgs>(args: SelectSubset<T, GeneratedWebsiteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GeneratedWebsiteClient<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GeneratedWebsite that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GeneratedWebsiteFindFirstArgs} args - Arguments to find a GeneratedWebsite
+     * @example
+     * // Get one GeneratedWebsite
+     * const generatedWebsite = await prisma.generatedWebsite.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GeneratedWebsiteFindFirstArgs>(args?: SelectSubset<T, GeneratedWebsiteFindFirstArgs<ExtArgs>>): Prisma__GeneratedWebsiteClient<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GeneratedWebsite that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GeneratedWebsiteFindFirstOrThrowArgs} args - Arguments to find a GeneratedWebsite
+     * @example
+     * // Get one GeneratedWebsite
+     * const generatedWebsite = await prisma.generatedWebsite.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GeneratedWebsiteFindFirstOrThrowArgs>(args?: SelectSubset<T, GeneratedWebsiteFindFirstOrThrowArgs<ExtArgs>>): Prisma__GeneratedWebsiteClient<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GeneratedWebsites that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GeneratedWebsiteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GeneratedWebsites
+     * const generatedWebsites = await prisma.generatedWebsite.findMany()
+     * 
+     * // Get first 10 GeneratedWebsites
+     * const generatedWebsites = await prisma.generatedWebsite.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const generatedWebsiteWithIdOnly = await prisma.generatedWebsite.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GeneratedWebsiteFindManyArgs>(args?: SelectSubset<T, GeneratedWebsiteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GeneratedWebsite.
+     * @param {GeneratedWebsiteCreateArgs} args - Arguments to create a GeneratedWebsite.
+     * @example
+     * // Create one GeneratedWebsite
+     * const GeneratedWebsite = await prisma.generatedWebsite.create({
+     *   data: {
+     *     // ... data to create a GeneratedWebsite
+     *   }
+     * })
+     * 
+     */
+    create<T extends GeneratedWebsiteCreateArgs>(args: SelectSubset<T, GeneratedWebsiteCreateArgs<ExtArgs>>): Prisma__GeneratedWebsiteClient<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GeneratedWebsites.
+     * @param {GeneratedWebsiteCreateManyArgs} args - Arguments to create many GeneratedWebsites.
+     * @example
+     * // Create many GeneratedWebsites
+     * const generatedWebsite = await prisma.generatedWebsite.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GeneratedWebsiteCreateManyArgs>(args?: SelectSubset<T, GeneratedWebsiteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GeneratedWebsites and returns the data saved in the database.
+     * @param {GeneratedWebsiteCreateManyAndReturnArgs} args - Arguments to create many GeneratedWebsites.
+     * @example
+     * // Create many GeneratedWebsites
+     * const generatedWebsite = await prisma.generatedWebsite.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GeneratedWebsites and only return the `id`
+     * const generatedWebsiteWithIdOnly = await prisma.generatedWebsite.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GeneratedWebsiteCreateManyAndReturnArgs>(args?: SelectSubset<T, GeneratedWebsiteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GeneratedWebsite.
+     * @param {GeneratedWebsiteDeleteArgs} args - Arguments to delete one GeneratedWebsite.
+     * @example
+     * // Delete one GeneratedWebsite
+     * const GeneratedWebsite = await prisma.generatedWebsite.delete({
+     *   where: {
+     *     // ... filter to delete one GeneratedWebsite
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GeneratedWebsiteDeleteArgs>(args: SelectSubset<T, GeneratedWebsiteDeleteArgs<ExtArgs>>): Prisma__GeneratedWebsiteClient<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GeneratedWebsite.
+     * @param {GeneratedWebsiteUpdateArgs} args - Arguments to update one GeneratedWebsite.
+     * @example
+     * // Update one GeneratedWebsite
+     * const generatedWebsite = await prisma.generatedWebsite.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GeneratedWebsiteUpdateArgs>(args: SelectSubset<T, GeneratedWebsiteUpdateArgs<ExtArgs>>): Prisma__GeneratedWebsiteClient<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GeneratedWebsites.
+     * @param {GeneratedWebsiteDeleteManyArgs} args - Arguments to filter GeneratedWebsites to delete.
+     * @example
+     * // Delete a few GeneratedWebsites
+     * const { count } = await prisma.generatedWebsite.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GeneratedWebsiteDeleteManyArgs>(args?: SelectSubset<T, GeneratedWebsiteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GeneratedWebsites.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GeneratedWebsiteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GeneratedWebsites
+     * const generatedWebsite = await prisma.generatedWebsite.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GeneratedWebsiteUpdateManyArgs>(args: SelectSubset<T, GeneratedWebsiteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GeneratedWebsites and returns the data updated in the database.
+     * @param {GeneratedWebsiteUpdateManyAndReturnArgs} args - Arguments to update many GeneratedWebsites.
+     * @example
+     * // Update many GeneratedWebsites
+     * const generatedWebsite = await prisma.generatedWebsite.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GeneratedWebsites and only return the `id`
+     * const generatedWebsiteWithIdOnly = await prisma.generatedWebsite.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GeneratedWebsiteUpdateManyAndReturnArgs>(args: SelectSubset<T, GeneratedWebsiteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GeneratedWebsite.
+     * @param {GeneratedWebsiteUpsertArgs} args - Arguments to update or create a GeneratedWebsite.
+     * @example
+     * // Update or create a GeneratedWebsite
+     * const generatedWebsite = await prisma.generatedWebsite.upsert({
+     *   create: {
+     *     // ... data to create a GeneratedWebsite
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GeneratedWebsite we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GeneratedWebsiteUpsertArgs>(args: SelectSubset<T, GeneratedWebsiteUpsertArgs<ExtArgs>>): Prisma__GeneratedWebsiteClient<$Result.GetResult<Prisma.$GeneratedWebsitePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GeneratedWebsites.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GeneratedWebsiteCountArgs} args - Arguments to filter GeneratedWebsites to count.
+     * @example
+     * // Count the number of GeneratedWebsites
+     * const count = await prisma.generatedWebsite.count({
+     *   where: {
+     *     // ... the filter for the GeneratedWebsites we want to count
+     *   }
+     * })
+    **/
+    count<T extends GeneratedWebsiteCountArgs>(
+      args?: Subset<T, GeneratedWebsiteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GeneratedWebsiteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GeneratedWebsite.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GeneratedWebsiteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GeneratedWebsiteAggregateArgs>(args: Subset<T, GeneratedWebsiteAggregateArgs>): Prisma.PrismaPromise<GetGeneratedWebsiteAggregateType<T>>
+
+    /**
+     * Group by GeneratedWebsite.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GeneratedWebsiteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GeneratedWebsiteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GeneratedWebsiteGroupByArgs['orderBy'] }
+        : { orderBy?: GeneratedWebsiteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GeneratedWebsiteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGeneratedWebsiteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GeneratedWebsite model
+   */
+  readonly fields: GeneratedWebsiteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GeneratedWebsite.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GeneratedWebsiteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    business<T extends BusinessDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BusinessDefaultArgs<ExtArgs>>): Prisma__BusinessClient<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    research<T extends GeneratedWebsite$researchArgs<ExtArgs> = {}>(args?: Subset<T, GeneratedWebsite$researchArgs<ExtArgs>>): Prisma__AgentResearchClient<$Result.GetResult<Prisma.$AgentResearchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GeneratedWebsite model
+   */
+  interface GeneratedWebsiteFieldRefs {
+    readonly id: FieldRef<"GeneratedWebsite", 'String'>
+    readonly businessId: FieldRef<"GeneratedWebsite", 'String'>
+    readonly researchId: FieldRef<"GeneratedWebsite", 'String'>
+    readonly status: FieldRef<"GeneratedWebsite", 'GeneratedWebsiteStatus'>
+    readonly websitePath: FieldRef<"GeneratedWebsite", 'String'>
+    readonly files: FieldRef<"GeneratedWebsite", 'Json'>
+    readonly previewHtml: FieldRef<"GeneratedWebsite", 'String'>
+    readonly summary: FieldRef<"GeneratedWebsite", 'String'>
+    readonly error: FieldRef<"GeneratedWebsite", 'String'>
+    readonly createdAt: FieldRef<"GeneratedWebsite", 'DateTime'>
+    readonly updatedAt: FieldRef<"GeneratedWebsite", 'DateTime'>
+    readonly deploymentUrl: FieldRef<"GeneratedWebsite", 'String'>
+    readonly vercelDeploymentId: FieldRef<"GeneratedWebsite", 'String'>
+    readonly deploymentStatus: FieldRef<"GeneratedWebsite", 'String'>
+    readonly deployedAt: FieldRef<"GeneratedWebsite", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GeneratedWebsite findUnique
+   */
+  export type GeneratedWebsiteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    /**
+     * Filter, which GeneratedWebsite to fetch.
+     */
+    where: GeneratedWebsiteWhereUniqueInput
+  }
+
+  /**
+   * GeneratedWebsite findUniqueOrThrow
+   */
+  export type GeneratedWebsiteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    /**
+     * Filter, which GeneratedWebsite to fetch.
+     */
+    where: GeneratedWebsiteWhereUniqueInput
+  }
+
+  /**
+   * GeneratedWebsite findFirst
+   */
+  export type GeneratedWebsiteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    /**
+     * Filter, which GeneratedWebsite to fetch.
+     */
+    where?: GeneratedWebsiteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GeneratedWebsites to fetch.
+     */
+    orderBy?: GeneratedWebsiteOrderByWithRelationInput | GeneratedWebsiteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GeneratedWebsites.
+     */
+    cursor?: GeneratedWebsiteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GeneratedWebsites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GeneratedWebsites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GeneratedWebsites.
+     */
+    distinct?: GeneratedWebsiteScalarFieldEnum | GeneratedWebsiteScalarFieldEnum[]
+  }
+
+  /**
+   * GeneratedWebsite findFirstOrThrow
+   */
+  export type GeneratedWebsiteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    /**
+     * Filter, which GeneratedWebsite to fetch.
+     */
+    where?: GeneratedWebsiteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GeneratedWebsites to fetch.
+     */
+    orderBy?: GeneratedWebsiteOrderByWithRelationInput | GeneratedWebsiteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GeneratedWebsites.
+     */
+    cursor?: GeneratedWebsiteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GeneratedWebsites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GeneratedWebsites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GeneratedWebsites.
+     */
+    distinct?: GeneratedWebsiteScalarFieldEnum | GeneratedWebsiteScalarFieldEnum[]
+  }
+
+  /**
+   * GeneratedWebsite findMany
+   */
+  export type GeneratedWebsiteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    /**
+     * Filter, which GeneratedWebsites to fetch.
+     */
+    where?: GeneratedWebsiteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GeneratedWebsites to fetch.
+     */
+    orderBy?: GeneratedWebsiteOrderByWithRelationInput | GeneratedWebsiteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GeneratedWebsites.
+     */
+    cursor?: GeneratedWebsiteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GeneratedWebsites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GeneratedWebsites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GeneratedWebsites.
+     */
+    distinct?: GeneratedWebsiteScalarFieldEnum | GeneratedWebsiteScalarFieldEnum[]
+  }
+
+  /**
+   * GeneratedWebsite create
+   */
+  export type GeneratedWebsiteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GeneratedWebsite.
+     */
+    data: XOR<GeneratedWebsiteCreateInput, GeneratedWebsiteUncheckedCreateInput>
+  }
+
+  /**
+   * GeneratedWebsite createMany
+   */
+  export type GeneratedWebsiteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GeneratedWebsites.
+     */
+    data: GeneratedWebsiteCreateManyInput | GeneratedWebsiteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GeneratedWebsite createManyAndReturn
+   */
+  export type GeneratedWebsiteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * The data used to create many GeneratedWebsites.
+     */
+    data: GeneratedWebsiteCreateManyInput | GeneratedWebsiteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GeneratedWebsite update
+   */
+  export type GeneratedWebsiteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GeneratedWebsite.
+     */
+    data: XOR<GeneratedWebsiteUpdateInput, GeneratedWebsiteUncheckedUpdateInput>
+    /**
+     * Choose, which GeneratedWebsite to update.
+     */
+    where: GeneratedWebsiteWhereUniqueInput
+  }
+
+  /**
+   * GeneratedWebsite updateMany
+   */
+  export type GeneratedWebsiteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GeneratedWebsites.
+     */
+    data: XOR<GeneratedWebsiteUpdateManyMutationInput, GeneratedWebsiteUncheckedUpdateManyInput>
+    /**
+     * Filter which GeneratedWebsites to update
+     */
+    where?: GeneratedWebsiteWhereInput
+    /**
+     * Limit how many GeneratedWebsites to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GeneratedWebsite updateManyAndReturn
+   */
+  export type GeneratedWebsiteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * The data used to update GeneratedWebsites.
+     */
+    data: XOR<GeneratedWebsiteUpdateManyMutationInput, GeneratedWebsiteUncheckedUpdateManyInput>
+    /**
+     * Filter which GeneratedWebsites to update
+     */
+    where?: GeneratedWebsiteWhereInput
+    /**
+     * Limit how many GeneratedWebsites to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GeneratedWebsite upsert
+   */
+  export type GeneratedWebsiteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GeneratedWebsite to update in case it exists.
+     */
+    where: GeneratedWebsiteWhereUniqueInput
+    /**
+     * In case the GeneratedWebsite found by the `where` argument doesn't exist, create a new GeneratedWebsite with this data.
+     */
+    create: XOR<GeneratedWebsiteCreateInput, GeneratedWebsiteUncheckedCreateInput>
+    /**
+     * In case the GeneratedWebsite was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GeneratedWebsiteUpdateInput, GeneratedWebsiteUncheckedUpdateInput>
+  }
+
+  /**
+   * GeneratedWebsite delete
+   */
+  export type GeneratedWebsiteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
+    /**
+     * Filter which GeneratedWebsite to delete.
+     */
+    where: GeneratedWebsiteWhereUniqueInput
+  }
+
+  /**
+   * GeneratedWebsite deleteMany
+   */
+  export type GeneratedWebsiteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GeneratedWebsites to delete
+     */
+    where?: GeneratedWebsiteWhereInput
+    /**
+     * Limit how many GeneratedWebsites to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GeneratedWebsite.research
+   */
+  export type GeneratedWebsite$researchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentResearch
+     */
+    select?: AgentResearchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentResearch
+     */
+    omit?: AgentResearchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentResearchInclude<ExtArgs> | null
+    where?: AgentResearchWhereInput
+  }
+
+  /**
+   * GeneratedWebsite without action
+   */
+  export type GeneratedWebsiteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedWebsite
+     */
+    select?: GeneratedWebsiteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedWebsite
+     */
+    omit?: GeneratedWebsiteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedWebsiteInclude<ExtArgs> | null
   }
 
 
@@ -4609,6 +6028,27 @@ export namespace Prisma {
   };
 
   export type AgentResearchScalarFieldEnum = (typeof AgentResearchScalarFieldEnum)[keyof typeof AgentResearchScalarFieldEnum]
+
+
+  export const GeneratedWebsiteScalarFieldEnum: {
+    id: 'id',
+    businessId: 'businessId',
+    researchId: 'researchId',
+    status: 'status',
+    websitePath: 'websitePath',
+    files: 'files',
+    previewHtml: 'previewHtml',
+    summary: 'summary',
+    error: 'error',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deploymentUrl: 'deploymentUrl',
+    vercelDeploymentId: 'vercelDeploymentId',
+    deploymentStatus: 'deploymentStatus',
+    deployedAt: 'deployedAt'
+  };
+
+  export type GeneratedWebsiteScalarFieldEnum = (typeof GeneratedWebsiteScalarFieldEnum)[keyof typeof GeneratedWebsiteScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -4735,6 +6175,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'GeneratedWebsiteStatus'
+   */
+  export type EnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GeneratedWebsiteStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'GeneratedWebsiteStatus[]'
+   */
+  export type ListEnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GeneratedWebsiteStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -4770,6 +6224,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Business"> | Date | string
     reports?: ReportListRelationFilter
     agentResearches?: AgentResearchListRelationFilter
+    generatedWebsites?: GeneratedWebsiteListRelationFilter
   }
 
   export type BusinessOrderByWithRelationInput = {
@@ -4788,6 +6243,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     reports?: ReportOrderByRelationAggregateInput
     agentResearches?: AgentResearchOrderByRelationAggregateInput
+    generatedWebsites?: GeneratedWebsiteOrderByRelationAggregateInput
   }
 
   export type BusinessWhereUniqueInput = Prisma.AtLeast<{
@@ -4809,6 +6265,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Business"> | Date | string
     reports?: ReportListRelationFilter
     agentResearches?: AgentResearchListRelationFilter
+    generatedWebsites?: GeneratedWebsiteListRelationFilter
   }, "id" | "placeId">
 
   export type BusinessOrderByWithAggregationInput = {
@@ -4931,6 +6388,7 @@ export namespace Prisma {
     error?: StringNullableFilter<"AgentResearch"> | string | null
     createdAt?: DateTimeFilter<"AgentResearch"> | Date | string
     updatedAt?: DateTimeFilter<"AgentResearch"> | Date | string
+    generatedWebsites?: GeneratedWebsiteListRelationFilter
     business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
   }
 
@@ -4943,6 +6401,7 @@ export namespace Prisma {
     error?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    generatedWebsites?: GeneratedWebsiteOrderByRelationAggregateInput
     business?: BusinessOrderByWithRelationInput
   }
 
@@ -4958,6 +6417,7 @@ export namespace Prisma {
     error?: StringNullableFilter<"AgentResearch"> | string | null
     createdAt?: DateTimeFilter<"AgentResearch"> | Date | string
     updatedAt?: DateTimeFilter<"AgentResearch"> | Date | string
+    generatedWebsites?: GeneratedWebsiteListRelationFilter
     business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
   }, "id">
 
@@ -4989,6 +6449,114 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"AgentResearch"> | Date | string
   }
 
+  export type GeneratedWebsiteWhereInput = {
+    AND?: GeneratedWebsiteWhereInput | GeneratedWebsiteWhereInput[]
+    OR?: GeneratedWebsiteWhereInput[]
+    NOT?: GeneratedWebsiteWhereInput | GeneratedWebsiteWhereInput[]
+    id?: StringFilter<"GeneratedWebsite"> | string
+    businessId?: StringFilter<"GeneratedWebsite"> | string
+    researchId?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    status?: EnumGeneratedWebsiteStatusFilter<"GeneratedWebsite"> | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFilter<"GeneratedWebsite"> | string
+    files?: JsonNullableFilter<"GeneratedWebsite">
+    previewHtml?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    summary?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    error?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    createdAt?: DateTimeFilter<"GeneratedWebsite"> | Date | string
+    updatedAt?: DateTimeFilter<"GeneratedWebsite"> | Date | string
+    deploymentUrl?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    vercelDeploymentId?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    deploymentStatus?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    deployedAt?: DateTimeNullableFilter<"GeneratedWebsite"> | Date | string | null
+    business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
+    research?: XOR<AgentResearchNullableScalarRelationFilter, AgentResearchWhereInput> | null
+  }
+
+  export type GeneratedWebsiteOrderByWithRelationInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    researchId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    websitePath?: SortOrder
+    files?: SortOrderInput | SortOrder
+    previewHtml?: SortOrderInput | SortOrder
+    summary?: SortOrderInput | SortOrder
+    error?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deploymentUrl?: SortOrderInput | SortOrder
+    vercelDeploymentId?: SortOrderInput | SortOrder
+    deploymentStatus?: SortOrderInput | SortOrder
+    deployedAt?: SortOrderInput | SortOrder
+    business?: BusinessOrderByWithRelationInput
+    research?: AgentResearchOrderByWithRelationInput
+  }
+
+  export type GeneratedWebsiteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GeneratedWebsiteWhereInput | GeneratedWebsiteWhereInput[]
+    OR?: GeneratedWebsiteWhereInput[]
+    NOT?: GeneratedWebsiteWhereInput | GeneratedWebsiteWhereInput[]
+    businessId?: StringFilter<"GeneratedWebsite"> | string
+    researchId?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    status?: EnumGeneratedWebsiteStatusFilter<"GeneratedWebsite"> | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFilter<"GeneratedWebsite"> | string
+    files?: JsonNullableFilter<"GeneratedWebsite">
+    previewHtml?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    summary?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    error?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    createdAt?: DateTimeFilter<"GeneratedWebsite"> | Date | string
+    updatedAt?: DateTimeFilter<"GeneratedWebsite"> | Date | string
+    deploymentUrl?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    vercelDeploymentId?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    deploymentStatus?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    deployedAt?: DateTimeNullableFilter<"GeneratedWebsite"> | Date | string | null
+    business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
+    research?: XOR<AgentResearchNullableScalarRelationFilter, AgentResearchWhereInput> | null
+  }, "id">
+
+  export type GeneratedWebsiteOrderByWithAggregationInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    researchId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    websitePath?: SortOrder
+    files?: SortOrderInput | SortOrder
+    previewHtml?: SortOrderInput | SortOrder
+    summary?: SortOrderInput | SortOrder
+    error?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deploymentUrl?: SortOrderInput | SortOrder
+    vercelDeploymentId?: SortOrderInput | SortOrder
+    deploymentStatus?: SortOrderInput | SortOrder
+    deployedAt?: SortOrderInput | SortOrder
+    _count?: GeneratedWebsiteCountOrderByAggregateInput
+    _max?: GeneratedWebsiteMaxOrderByAggregateInput
+    _min?: GeneratedWebsiteMinOrderByAggregateInput
+  }
+
+  export type GeneratedWebsiteScalarWhereWithAggregatesInput = {
+    AND?: GeneratedWebsiteScalarWhereWithAggregatesInput | GeneratedWebsiteScalarWhereWithAggregatesInput[]
+    OR?: GeneratedWebsiteScalarWhereWithAggregatesInput[]
+    NOT?: GeneratedWebsiteScalarWhereWithAggregatesInput | GeneratedWebsiteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GeneratedWebsite"> | string
+    businessId?: StringWithAggregatesFilter<"GeneratedWebsite"> | string
+    researchId?: StringNullableWithAggregatesFilter<"GeneratedWebsite"> | string | null
+    status?: EnumGeneratedWebsiteStatusWithAggregatesFilter<"GeneratedWebsite"> | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringWithAggregatesFilter<"GeneratedWebsite"> | string
+    files?: JsonNullableWithAggregatesFilter<"GeneratedWebsite">
+    previewHtml?: StringNullableWithAggregatesFilter<"GeneratedWebsite"> | string | null
+    summary?: StringNullableWithAggregatesFilter<"GeneratedWebsite"> | string | null
+    error?: StringNullableWithAggregatesFilter<"GeneratedWebsite"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"GeneratedWebsite"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GeneratedWebsite"> | Date | string
+    deploymentUrl?: StringNullableWithAggregatesFilter<"GeneratedWebsite"> | string | null
+    vercelDeploymentId?: StringNullableWithAggregatesFilter<"GeneratedWebsite"> | string | null
+    deploymentStatus?: StringNullableWithAggregatesFilter<"GeneratedWebsite"> | string | null
+    deployedAt?: DateTimeNullableWithAggregatesFilter<"GeneratedWebsite"> | Date | string | null
+  }
+
   export type BusinessCreateInput = {
     id?: string
     placeId?: string | null
@@ -5005,6 +6573,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     reports?: ReportCreateNestedManyWithoutBusinessInput
     agentResearches?: AgentResearchCreateNestedManyWithoutBusinessInput
+    generatedWebsites?: GeneratedWebsiteCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessUncheckedCreateInput = {
@@ -5023,6 +6592,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     reports?: ReportUncheckedCreateNestedManyWithoutBusinessInput
     agentResearches?: AgentResearchUncheckedCreateNestedManyWithoutBusinessInput
+    generatedWebsites?: GeneratedWebsiteUncheckedCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessUpdateInput = {
@@ -5041,6 +6611,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reports?: ReportUpdateManyWithoutBusinessNestedInput
     agentResearches?: AgentResearchUpdateManyWithoutBusinessNestedInput
+    generatedWebsites?: GeneratedWebsiteUpdateManyWithoutBusinessNestedInput
   }
 
   export type BusinessUncheckedUpdateInput = {
@@ -5059,6 +6630,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reports?: ReportUncheckedUpdateManyWithoutBusinessNestedInput
     agentResearches?: AgentResearchUncheckedUpdateManyWithoutBusinessNestedInput
+    generatedWebsites?: GeneratedWebsiteUncheckedUpdateManyWithoutBusinessNestedInput
   }
 
   export type BusinessCreateManyInput = {
@@ -5193,6 +6765,7 @@ export namespace Prisma {
     error?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    generatedWebsites?: GeneratedWebsiteCreateNestedManyWithoutResearchInput
     business: BusinessCreateNestedOneWithoutAgentResearchesInput
   }
 
@@ -5205,6 +6778,7 @@ export namespace Prisma {
     error?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    generatedWebsites?: GeneratedWebsiteUncheckedCreateNestedManyWithoutResearchInput
   }
 
   export type AgentResearchUpdateInput = {
@@ -5215,6 +6789,7 @@ export namespace Prisma {
     error?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedWebsites?: GeneratedWebsiteUpdateManyWithoutResearchNestedInput
     business?: BusinessUpdateOneRequiredWithoutAgentResearchesNestedInput
   }
 
@@ -5227,6 +6802,7 @@ export namespace Prisma {
     error?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedWebsites?: GeneratedWebsiteUncheckedUpdateManyWithoutResearchNestedInput
   }
 
   export type AgentResearchCreateManyInput = {
@@ -5259,6 +6835,130 @@ export namespace Prisma {
     error?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GeneratedWebsiteCreateInput = {
+    id?: string
+    status?: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: string | null
+    summary?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deploymentUrl?: string | null
+    vercelDeploymentId?: string | null
+    deploymentStatus?: string | null
+    deployedAt?: Date | string | null
+    business: BusinessCreateNestedOneWithoutGeneratedWebsitesInput
+    research?: AgentResearchCreateNestedOneWithoutGeneratedWebsitesInput
+  }
+
+  export type GeneratedWebsiteUncheckedCreateInput = {
+    id?: string
+    businessId: string
+    researchId?: string | null
+    status?: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: string | null
+    summary?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deploymentUrl?: string | null
+    vercelDeploymentId?: string | null
+    deploymentStatus?: string | null
+    deployedAt?: Date | string | null
+  }
+
+  export type GeneratedWebsiteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    business?: BusinessUpdateOneRequiredWithoutGeneratedWebsitesNestedInput
+    research?: AgentResearchUpdateOneWithoutGeneratedWebsitesNestedInput
+  }
+
+  export type GeneratedWebsiteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    businessId?: StringFieldUpdateOperationsInput | string
+    researchId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GeneratedWebsiteCreateManyInput = {
+    id?: string
+    businessId: string
+    researchId?: string | null
+    status?: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: string | null
+    summary?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deploymentUrl?: string | null
+    vercelDeploymentId?: string | null
+    deploymentStatus?: string | null
+    deployedAt?: Date | string | null
+  }
+
+  export type GeneratedWebsiteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GeneratedWebsiteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    businessId?: StringFieldUpdateOperationsInput | string
+    researchId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -5314,6 +7014,12 @@ export namespace Prisma {
     none?: AgentResearchWhereInput
   }
 
+  export type GeneratedWebsiteListRelationFilter = {
+    every?: GeneratedWebsiteWhereInput
+    some?: GeneratedWebsiteWhereInput
+    none?: GeneratedWebsiteWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -5324,6 +7030,10 @@ export namespace Prisma {
   }
 
   export type AgentResearchOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GeneratedWebsiteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -5588,6 +7298,105 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type EnumGeneratedWebsiteStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GeneratedWebsiteStatus | EnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GeneratedWebsiteStatus[] | ListEnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GeneratedWebsiteStatus[] | ListEnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGeneratedWebsiteStatusFilter<$PrismaModel> | $Enums.GeneratedWebsiteStatus
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type AgentResearchNullableScalarRelationFilter = {
+    is?: AgentResearchWhereInput | null
+    isNot?: AgentResearchWhereInput | null
+  }
+
+  export type GeneratedWebsiteCountOrderByAggregateInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    researchId?: SortOrder
+    status?: SortOrder
+    websitePath?: SortOrder
+    files?: SortOrder
+    previewHtml?: SortOrder
+    summary?: SortOrder
+    error?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deploymentUrl?: SortOrder
+    vercelDeploymentId?: SortOrder
+    deploymentStatus?: SortOrder
+    deployedAt?: SortOrder
+  }
+
+  export type GeneratedWebsiteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    researchId?: SortOrder
+    status?: SortOrder
+    websitePath?: SortOrder
+    previewHtml?: SortOrder
+    summary?: SortOrder
+    error?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deploymentUrl?: SortOrder
+    vercelDeploymentId?: SortOrder
+    deploymentStatus?: SortOrder
+    deployedAt?: SortOrder
+  }
+
+  export type GeneratedWebsiteMinOrderByAggregateInput = {
+    id?: SortOrder
+    businessId?: SortOrder
+    researchId?: SortOrder
+    status?: SortOrder
+    websitePath?: SortOrder
+    previewHtml?: SortOrder
+    summary?: SortOrder
+    error?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deploymentUrl?: SortOrder
+    vercelDeploymentId?: SortOrder
+    deploymentStatus?: SortOrder
+    deployedAt?: SortOrder
+  }
+
+  export type EnumGeneratedWebsiteStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GeneratedWebsiteStatus | EnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GeneratedWebsiteStatus[] | ListEnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GeneratedWebsiteStatus[] | ListEnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGeneratedWebsiteStatusWithAggregatesFilter<$PrismaModel> | $Enums.GeneratedWebsiteStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGeneratedWebsiteStatusFilter<$PrismaModel>
+    _max?: NestedEnumGeneratedWebsiteStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type ReportCreateNestedManyWithoutBusinessInput = {
     create?: XOR<ReportCreateWithoutBusinessInput, ReportUncheckedCreateWithoutBusinessInput> | ReportCreateWithoutBusinessInput[] | ReportUncheckedCreateWithoutBusinessInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutBusinessInput | ReportCreateOrConnectWithoutBusinessInput[]
@@ -5602,6 +7411,13 @@ export namespace Prisma {
     connect?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
   }
 
+  export type GeneratedWebsiteCreateNestedManyWithoutBusinessInput = {
+    create?: XOR<GeneratedWebsiteCreateWithoutBusinessInput, GeneratedWebsiteUncheckedCreateWithoutBusinessInput> | GeneratedWebsiteCreateWithoutBusinessInput[] | GeneratedWebsiteUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: GeneratedWebsiteCreateOrConnectWithoutBusinessInput | GeneratedWebsiteCreateOrConnectWithoutBusinessInput[]
+    createMany?: GeneratedWebsiteCreateManyBusinessInputEnvelope
+    connect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+  }
+
   export type ReportUncheckedCreateNestedManyWithoutBusinessInput = {
     create?: XOR<ReportCreateWithoutBusinessInput, ReportUncheckedCreateWithoutBusinessInput> | ReportCreateWithoutBusinessInput[] | ReportUncheckedCreateWithoutBusinessInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutBusinessInput | ReportCreateOrConnectWithoutBusinessInput[]
@@ -5614,6 +7430,13 @@ export namespace Prisma {
     connectOrCreate?: AgentResearchCreateOrConnectWithoutBusinessInput | AgentResearchCreateOrConnectWithoutBusinessInput[]
     createMany?: AgentResearchCreateManyBusinessInputEnvelope
     connect?: AgentResearchWhereUniqueInput | AgentResearchWhereUniqueInput[]
+  }
+
+  export type GeneratedWebsiteUncheckedCreateNestedManyWithoutBusinessInput = {
+    create?: XOR<GeneratedWebsiteCreateWithoutBusinessInput, GeneratedWebsiteUncheckedCreateWithoutBusinessInput> | GeneratedWebsiteCreateWithoutBusinessInput[] | GeneratedWebsiteUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: GeneratedWebsiteCreateOrConnectWithoutBusinessInput | GeneratedWebsiteCreateOrConnectWithoutBusinessInput[]
+    createMany?: GeneratedWebsiteCreateManyBusinessInputEnvelope
+    connect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -5656,6 +7479,20 @@ export namespace Prisma {
     deleteMany?: AgentResearchScalarWhereInput | AgentResearchScalarWhereInput[]
   }
 
+  export type GeneratedWebsiteUpdateManyWithoutBusinessNestedInput = {
+    create?: XOR<GeneratedWebsiteCreateWithoutBusinessInput, GeneratedWebsiteUncheckedCreateWithoutBusinessInput> | GeneratedWebsiteCreateWithoutBusinessInput[] | GeneratedWebsiteUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: GeneratedWebsiteCreateOrConnectWithoutBusinessInput | GeneratedWebsiteCreateOrConnectWithoutBusinessInput[]
+    upsert?: GeneratedWebsiteUpsertWithWhereUniqueWithoutBusinessInput | GeneratedWebsiteUpsertWithWhereUniqueWithoutBusinessInput[]
+    createMany?: GeneratedWebsiteCreateManyBusinessInputEnvelope
+    set?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    disconnect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    delete?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    connect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    update?: GeneratedWebsiteUpdateWithWhereUniqueWithoutBusinessInput | GeneratedWebsiteUpdateWithWhereUniqueWithoutBusinessInput[]
+    updateMany?: GeneratedWebsiteUpdateManyWithWhereWithoutBusinessInput | GeneratedWebsiteUpdateManyWithWhereWithoutBusinessInput[]
+    deleteMany?: GeneratedWebsiteScalarWhereInput | GeneratedWebsiteScalarWhereInput[]
+  }
+
   export type ReportUncheckedUpdateManyWithoutBusinessNestedInput = {
     create?: XOR<ReportCreateWithoutBusinessInput, ReportUncheckedCreateWithoutBusinessInput> | ReportCreateWithoutBusinessInput[] | ReportUncheckedCreateWithoutBusinessInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutBusinessInput | ReportCreateOrConnectWithoutBusinessInput[]
@@ -5684,6 +7521,20 @@ export namespace Prisma {
     deleteMany?: AgentResearchScalarWhereInput | AgentResearchScalarWhereInput[]
   }
 
+  export type GeneratedWebsiteUncheckedUpdateManyWithoutBusinessNestedInput = {
+    create?: XOR<GeneratedWebsiteCreateWithoutBusinessInput, GeneratedWebsiteUncheckedCreateWithoutBusinessInput> | GeneratedWebsiteCreateWithoutBusinessInput[] | GeneratedWebsiteUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: GeneratedWebsiteCreateOrConnectWithoutBusinessInput | GeneratedWebsiteCreateOrConnectWithoutBusinessInput[]
+    upsert?: GeneratedWebsiteUpsertWithWhereUniqueWithoutBusinessInput | GeneratedWebsiteUpsertWithWhereUniqueWithoutBusinessInput[]
+    createMany?: GeneratedWebsiteCreateManyBusinessInputEnvelope
+    set?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    disconnect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    delete?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    connect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    update?: GeneratedWebsiteUpdateWithWhereUniqueWithoutBusinessInput | GeneratedWebsiteUpdateWithWhereUniqueWithoutBusinessInput[]
+    updateMany?: GeneratedWebsiteUpdateManyWithWhereWithoutBusinessInput | GeneratedWebsiteUpdateManyWithWhereWithoutBusinessInput[]
+    deleteMany?: GeneratedWebsiteScalarWhereInput | GeneratedWebsiteScalarWhereInput[]
+  }
+
   export type BusinessCreateNestedOneWithoutReportsInput = {
     create?: XOR<BusinessCreateWithoutReportsInput, BusinessUncheckedCreateWithoutReportsInput>
     connectOrCreate?: BusinessCreateOrConnectWithoutReportsInput
@@ -5702,10 +7553,24 @@ export namespace Prisma {
     update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutReportsInput, BusinessUpdateWithoutReportsInput>, BusinessUncheckedUpdateWithoutReportsInput>
   }
 
+  export type GeneratedWebsiteCreateNestedManyWithoutResearchInput = {
+    create?: XOR<GeneratedWebsiteCreateWithoutResearchInput, GeneratedWebsiteUncheckedCreateWithoutResearchInput> | GeneratedWebsiteCreateWithoutResearchInput[] | GeneratedWebsiteUncheckedCreateWithoutResearchInput[]
+    connectOrCreate?: GeneratedWebsiteCreateOrConnectWithoutResearchInput | GeneratedWebsiteCreateOrConnectWithoutResearchInput[]
+    createMany?: GeneratedWebsiteCreateManyResearchInputEnvelope
+    connect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+  }
+
   export type BusinessCreateNestedOneWithoutAgentResearchesInput = {
     create?: XOR<BusinessCreateWithoutAgentResearchesInput, BusinessUncheckedCreateWithoutAgentResearchesInput>
     connectOrCreate?: BusinessCreateOrConnectWithoutAgentResearchesInput
     connect?: BusinessWhereUniqueInput
+  }
+
+  export type GeneratedWebsiteUncheckedCreateNestedManyWithoutResearchInput = {
+    create?: XOR<GeneratedWebsiteCreateWithoutResearchInput, GeneratedWebsiteUncheckedCreateWithoutResearchInput> | GeneratedWebsiteCreateWithoutResearchInput[] | GeneratedWebsiteUncheckedCreateWithoutResearchInput[]
+    connectOrCreate?: GeneratedWebsiteCreateOrConnectWithoutResearchInput | GeneratedWebsiteCreateOrConnectWithoutResearchInput[]
+    createMany?: GeneratedWebsiteCreateManyResearchInputEnvelope
+    connect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
   }
 
   export type EnumResearchStatusFieldUpdateOperationsInput = {
@@ -5716,12 +7581,78 @@ export namespace Prisma {
     set?: boolean | null
   }
 
+  export type GeneratedWebsiteUpdateManyWithoutResearchNestedInput = {
+    create?: XOR<GeneratedWebsiteCreateWithoutResearchInput, GeneratedWebsiteUncheckedCreateWithoutResearchInput> | GeneratedWebsiteCreateWithoutResearchInput[] | GeneratedWebsiteUncheckedCreateWithoutResearchInput[]
+    connectOrCreate?: GeneratedWebsiteCreateOrConnectWithoutResearchInput | GeneratedWebsiteCreateOrConnectWithoutResearchInput[]
+    upsert?: GeneratedWebsiteUpsertWithWhereUniqueWithoutResearchInput | GeneratedWebsiteUpsertWithWhereUniqueWithoutResearchInput[]
+    createMany?: GeneratedWebsiteCreateManyResearchInputEnvelope
+    set?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    disconnect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    delete?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    connect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    update?: GeneratedWebsiteUpdateWithWhereUniqueWithoutResearchInput | GeneratedWebsiteUpdateWithWhereUniqueWithoutResearchInput[]
+    updateMany?: GeneratedWebsiteUpdateManyWithWhereWithoutResearchInput | GeneratedWebsiteUpdateManyWithWhereWithoutResearchInput[]
+    deleteMany?: GeneratedWebsiteScalarWhereInput | GeneratedWebsiteScalarWhereInput[]
+  }
+
   export type BusinessUpdateOneRequiredWithoutAgentResearchesNestedInput = {
     create?: XOR<BusinessCreateWithoutAgentResearchesInput, BusinessUncheckedCreateWithoutAgentResearchesInput>
     connectOrCreate?: BusinessCreateOrConnectWithoutAgentResearchesInput
     upsert?: BusinessUpsertWithoutAgentResearchesInput
     connect?: BusinessWhereUniqueInput
     update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutAgentResearchesInput, BusinessUpdateWithoutAgentResearchesInput>, BusinessUncheckedUpdateWithoutAgentResearchesInput>
+  }
+
+  export type GeneratedWebsiteUncheckedUpdateManyWithoutResearchNestedInput = {
+    create?: XOR<GeneratedWebsiteCreateWithoutResearchInput, GeneratedWebsiteUncheckedCreateWithoutResearchInput> | GeneratedWebsiteCreateWithoutResearchInput[] | GeneratedWebsiteUncheckedCreateWithoutResearchInput[]
+    connectOrCreate?: GeneratedWebsiteCreateOrConnectWithoutResearchInput | GeneratedWebsiteCreateOrConnectWithoutResearchInput[]
+    upsert?: GeneratedWebsiteUpsertWithWhereUniqueWithoutResearchInput | GeneratedWebsiteUpsertWithWhereUniqueWithoutResearchInput[]
+    createMany?: GeneratedWebsiteCreateManyResearchInputEnvelope
+    set?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    disconnect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    delete?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    connect?: GeneratedWebsiteWhereUniqueInput | GeneratedWebsiteWhereUniqueInput[]
+    update?: GeneratedWebsiteUpdateWithWhereUniqueWithoutResearchInput | GeneratedWebsiteUpdateWithWhereUniqueWithoutResearchInput[]
+    updateMany?: GeneratedWebsiteUpdateManyWithWhereWithoutResearchInput | GeneratedWebsiteUpdateManyWithWhereWithoutResearchInput[]
+    deleteMany?: GeneratedWebsiteScalarWhereInput | GeneratedWebsiteScalarWhereInput[]
+  }
+
+  export type BusinessCreateNestedOneWithoutGeneratedWebsitesInput = {
+    create?: XOR<BusinessCreateWithoutGeneratedWebsitesInput, BusinessUncheckedCreateWithoutGeneratedWebsitesInput>
+    connectOrCreate?: BusinessCreateOrConnectWithoutGeneratedWebsitesInput
+    connect?: BusinessWhereUniqueInput
+  }
+
+  export type AgentResearchCreateNestedOneWithoutGeneratedWebsitesInput = {
+    create?: XOR<AgentResearchCreateWithoutGeneratedWebsitesInput, AgentResearchUncheckedCreateWithoutGeneratedWebsitesInput>
+    connectOrCreate?: AgentResearchCreateOrConnectWithoutGeneratedWebsitesInput
+    connect?: AgentResearchWhereUniqueInput
+  }
+
+  export type EnumGeneratedWebsiteStatusFieldUpdateOperationsInput = {
+    set?: $Enums.GeneratedWebsiteStatus
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type BusinessUpdateOneRequiredWithoutGeneratedWebsitesNestedInput = {
+    create?: XOR<BusinessCreateWithoutGeneratedWebsitesInput, BusinessUncheckedCreateWithoutGeneratedWebsitesInput>
+    connectOrCreate?: BusinessCreateOrConnectWithoutGeneratedWebsitesInput
+    upsert?: BusinessUpsertWithoutGeneratedWebsitesInput
+    connect?: BusinessWhereUniqueInput
+    update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutGeneratedWebsitesInput, BusinessUpdateWithoutGeneratedWebsitesInput>, BusinessUncheckedUpdateWithoutGeneratedWebsitesInput>
+  }
+
+  export type AgentResearchUpdateOneWithoutGeneratedWebsitesNestedInput = {
+    create?: XOR<AgentResearchCreateWithoutGeneratedWebsitesInput, AgentResearchUncheckedCreateWithoutGeneratedWebsitesInput>
+    connectOrCreate?: AgentResearchCreateOrConnectWithoutGeneratedWebsitesInput
+    upsert?: AgentResearchUpsertWithoutGeneratedWebsitesInput
+    disconnect?: AgentResearchWhereInput | boolean
+    delete?: AgentResearchWhereInput | boolean
+    connect?: AgentResearchWhereUniqueInput
+    update?: XOR<XOR<AgentResearchUpdateToOneWithWhereWithoutGeneratedWebsitesInput, AgentResearchUpdateWithoutGeneratedWebsitesInput>, AgentResearchUncheckedUpdateWithoutGeneratedWebsitesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -5903,6 +7834,48 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumGeneratedWebsiteStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GeneratedWebsiteStatus | EnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GeneratedWebsiteStatus[] | ListEnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GeneratedWebsiteStatus[] | ListEnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGeneratedWebsiteStatusFilter<$PrismaModel> | $Enums.GeneratedWebsiteStatus
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumGeneratedWebsiteStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GeneratedWebsiteStatus | EnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GeneratedWebsiteStatus[] | ListEnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GeneratedWebsiteStatus[] | ListEnumGeneratedWebsiteStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGeneratedWebsiteStatusWithAggregatesFilter<$PrismaModel> | $Enums.GeneratedWebsiteStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGeneratedWebsiteStatusFilter<$PrismaModel>
+    _max?: NestedEnumGeneratedWebsiteStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type ReportCreateWithoutBusinessInput = {
     id?: string
     status?: $Enums.ReportStatus
@@ -5941,6 +7914,7 @@ export namespace Prisma {
     error?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    generatedWebsites?: GeneratedWebsiteCreateNestedManyWithoutResearchInput
   }
 
   export type AgentResearchUncheckedCreateWithoutBusinessInput = {
@@ -5951,6 +7925,7 @@ export namespace Prisma {
     error?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    generatedWebsites?: GeneratedWebsiteUncheckedCreateNestedManyWithoutResearchInput
   }
 
   export type AgentResearchCreateOrConnectWithoutBusinessInput = {
@@ -5960,6 +7935,50 @@ export namespace Prisma {
 
   export type AgentResearchCreateManyBusinessInputEnvelope = {
     data: AgentResearchCreateManyBusinessInput | AgentResearchCreateManyBusinessInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GeneratedWebsiteCreateWithoutBusinessInput = {
+    id?: string
+    status?: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: string | null
+    summary?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deploymentUrl?: string | null
+    vercelDeploymentId?: string | null
+    deploymentStatus?: string | null
+    deployedAt?: Date | string | null
+    research?: AgentResearchCreateNestedOneWithoutGeneratedWebsitesInput
+  }
+
+  export type GeneratedWebsiteUncheckedCreateWithoutBusinessInput = {
+    id?: string
+    researchId?: string | null
+    status?: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: string | null
+    summary?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deploymentUrl?: string | null
+    vercelDeploymentId?: string | null
+    deploymentStatus?: string | null
+    deployedAt?: Date | string | null
+  }
+
+  export type GeneratedWebsiteCreateOrConnectWithoutBusinessInput = {
+    where: GeneratedWebsiteWhereUniqueInput
+    create: XOR<GeneratedWebsiteCreateWithoutBusinessInput, GeneratedWebsiteUncheckedCreateWithoutBusinessInput>
+  }
+
+  export type GeneratedWebsiteCreateManyBusinessInputEnvelope = {
+    data: GeneratedWebsiteCreateManyBusinessInput | GeneratedWebsiteCreateManyBusinessInput[]
     skipDuplicates?: boolean
   }
 
@@ -6023,6 +8042,43 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"AgentResearch"> | Date | string
   }
 
+  export type GeneratedWebsiteUpsertWithWhereUniqueWithoutBusinessInput = {
+    where: GeneratedWebsiteWhereUniqueInput
+    update: XOR<GeneratedWebsiteUpdateWithoutBusinessInput, GeneratedWebsiteUncheckedUpdateWithoutBusinessInput>
+    create: XOR<GeneratedWebsiteCreateWithoutBusinessInput, GeneratedWebsiteUncheckedCreateWithoutBusinessInput>
+  }
+
+  export type GeneratedWebsiteUpdateWithWhereUniqueWithoutBusinessInput = {
+    where: GeneratedWebsiteWhereUniqueInput
+    data: XOR<GeneratedWebsiteUpdateWithoutBusinessInput, GeneratedWebsiteUncheckedUpdateWithoutBusinessInput>
+  }
+
+  export type GeneratedWebsiteUpdateManyWithWhereWithoutBusinessInput = {
+    where: GeneratedWebsiteScalarWhereInput
+    data: XOR<GeneratedWebsiteUpdateManyMutationInput, GeneratedWebsiteUncheckedUpdateManyWithoutBusinessInput>
+  }
+
+  export type GeneratedWebsiteScalarWhereInput = {
+    AND?: GeneratedWebsiteScalarWhereInput | GeneratedWebsiteScalarWhereInput[]
+    OR?: GeneratedWebsiteScalarWhereInput[]
+    NOT?: GeneratedWebsiteScalarWhereInput | GeneratedWebsiteScalarWhereInput[]
+    id?: StringFilter<"GeneratedWebsite"> | string
+    businessId?: StringFilter<"GeneratedWebsite"> | string
+    researchId?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    status?: EnumGeneratedWebsiteStatusFilter<"GeneratedWebsite"> | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFilter<"GeneratedWebsite"> | string
+    files?: JsonNullableFilter<"GeneratedWebsite">
+    previewHtml?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    summary?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    error?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    createdAt?: DateTimeFilter<"GeneratedWebsite"> | Date | string
+    updatedAt?: DateTimeFilter<"GeneratedWebsite"> | Date | string
+    deploymentUrl?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    vercelDeploymentId?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    deploymentStatus?: StringNullableFilter<"GeneratedWebsite"> | string | null
+    deployedAt?: DateTimeNullableFilter<"GeneratedWebsite"> | Date | string | null
+  }
+
   export type BusinessCreateWithoutReportsInput = {
     id?: string
     placeId?: string | null
@@ -6038,6 +8094,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     agentResearches?: AgentResearchCreateNestedManyWithoutBusinessInput
+    generatedWebsites?: GeneratedWebsiteCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessUncheckedCreateWithoutReportsInput = {
@@ -6055,6 +8112,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     agentResearches?: AgentResearchUncheckedCreateNestedManyWithoutBusinessInput
+    generatedWebsites?: GeneratedWebsiteUncheckedCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessCreateOrConnectWithoutReportsInput = {
@@ -6088,6 +8146,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agentResearches?: AgentResearchUpdateManyWithoutBusinessNestedInput
+    generatedWebsites?: GeneratedWebsiteUpdateManyWithoutBusinessNestedInput
   }
 
   export type BusinessUncheckedUpdateWithoutReportsInput = {
@@ -6105,6 +8164,51 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agentResearches?: AgentResearchUncheckedUpdateManyWithoutBusinessNestedInput
+    generatedWebsites?: GeneratedWebsiteUncheckedUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type GeneratedWebsiteCreateWithoutResearchInput = {
+    id?: string
+    status?: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: string | null
+    summary?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deploymentUrl?: string | null
+    vercelDeploymentId?: string | null
+    deploymentStatus?: string | null
+    deployedAt?: Date | string | null
+    business: BusinessCreateNestedOneWithoutGeneratedWebsitesInput
+  }
+
+  export type GeneratedWebsiteUncheckedCreateWithoutResearchInput = {
+    id?: string
+    businessId: string
+    status?: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: string | null
+    summary?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deploymentUrl?: string | null
+    vercelDeploymentId?: string | null
+    deploymentStatus?: string | null
+    deployedAt?: Date | string | null
+  }
+
+  export type GeneratedWebsiteCreateOrConnectWithoutResearchInput = {
+    where: GeneratedWebsiteWhereUniqueInput
+    create: XOR<GeneratedWebsiteCreateWithoutResearchInput, GeneratedWebsiteUncheckedCreateWithoutResearchInput>
+  }
+
+  export type GeneratedWebsiteCreateManyResearchInputEnvelope = {
+    data: GeneratedWebsiteCreateManyResearchInput | GeneratedWebsiteCreateManyResearchInput[]
+    skipDuplicates?: boolean
   }
 
   export type BusinessCreateWithoutAgentResearchesInput = {
@@ -6122,6 +8226,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     reports?: ReportCreateNestedManyWithoutBusinessInput
+    generatedWebsites?: GeneratedWebsiteCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessUncheckedCreateWithoutAgentResearchesInput = {
@@ -6139,11 +8244,28 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     reports?: ReportUncheckedCreateNestedManyWithoutBusinessInput
+    generatedWebsites?: GeneratedWebsiteUncheckedCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessCreateOrConnectWithoutAgentResearchesInput = {
     where: BusinessWhereUniqueInput
     create: XOR<BusinessCreateWithoutAgentResearchesInput, BusinessUncheckedCreateWithoutAgentResearchesInput>
+  }
+
+  export type GeneratedWebsiteUpsertWithWhereUniqueWithoutResearchInput = {
+    where: GeneratedWebsiteWhereUniqueInput
+    update: XOR<GeneratedWebsiteUpdateWithoutResearchInput, GeneratedWebsiteUncheckedUpdateWithoutResearchInput>
+    create: XOR<GeneratedWebsiteCreateWithoutResearchInput, GeneratedWebsiteUncheckedCreateWithoutResearchInput>
+  }
+
+  export type GeneratedWebsiteUpdateWithWhereUniqueWithoutResearchInput = {
+    where: GeneratedWebsiteWhereUniqueInput
+    data: XOR<GeneratedWebsiteUpdateWithoutResearchInput, GeneratedWebsiteUncheckedUpdateWithoutResearchInput>
+  }
+
+  export type GeneratedWebsiteUpdateManyWithWhereWithoutResearchInput = {
+    where: GeneratedWebsiteScalarWhereInput
+    data: XOR<GeneratedWebsiteUpdateManyMutationInput, GeneratedWebsiteUncheckedUpdateManyWithoutResearchInput>
   }
 
   export type BusinessUpsertWithoutAgentResearchesInput = {
@@ -6172,6 +8294,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reports?: ReportUpdateManyWithoutBusinessNestedInput
+    generatedWebsites?: GeneratedWebsiteUpdateManyWithoutBusinessNestedInput
   }
 
   export type BusinessUncheckedUpdateWithoutAgentResearchesInput = {
@@ -6189,6 +8312,155 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reports?: ReportUncheckedUpdateManyWithoutBusinessNestedInput
+    generatedWebsites?: GeneratedWebsiteUncheckedUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type BusinessCreateWithoutGeneratedWebsitesInput = {
+    id?: string
+    placeId?: string | null
+    name: string
+    address?: string | null
+    phone?: string | null
+    email?: string | null
+    website?: string | null
+    category?: string | null
+    searchedCategory?: string | null
+    city?: string | null
+    googleMapsUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reports?: ReportCreateNestedManyWithoutBusinessInput
+    agentResearches?: AgentResearchCreateNestedManyWithoutBusinessInput
+  }
+
+  export type BusinessUncheckedCreateWithoutGeneratedWebsitesInput = {
+    id?: string
+    placeId?: string | null
+    name: string
+    address?: string | null
+    phone?: string | null
+    email?: string | null
+    website?: string | null
+    category?: string | null
+    searchedCategory?: string | null
+    city?: string | null
+    googleMapsUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reports?: ReportUncheckedCreateNestedManyWithoutBusinessInput
+    agentResearches?: AgentResearchUncheckedCreateNestedManyWithoutBusinessInput
+  }
+
+  export type BusinessCreateOrConnectWithoutGeneratedWebsitesInput = {
+    where: BusinessWhereUniqueInput
+    create: XOR<BusinessCreateWithoutGeneratedWebsitesInput, BusinessUncheckedCreateWithoutGeneratedWebsitesInput>
+  }
+
+  export type AgentResearchCreateWithoutGeneratedWebsitesInput = {
+    id?: string
+    status?: $Enums.ResearchStatus
+    websiteExists?: boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    business: BusinessCreateNestedOneWithoutAgentResearchesInput
+  }
+
+  export type AgentResearchUncheckedCreateWithoutGeneratedWebsitesInput = {
+    id?: string
+    businessId: string
+    status?: $Enums.ResearchStatus
+    websiteExists?: boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AgentResearchCreateOrConnectWithoutGeneratedWebsitesInput = {
+    where: AgentResearchWhereUniqueInput
+    create: XOR<AgentResearchCreateWithoutGeneratedWebsitesInput, AgentResearchUncheckedCreateWithoutGeneratedWebsitesInput>
+  }
+
+  export type BusinessUpsertWithoutGeneratedWebsitesInput = {
+    update: XOR<BusinessUpdateWithoutGeneratedWebsitesInput, BusinessUncheckedUpdateWithoutGeneratedWebsitesInput>
+    create: XOR<BusinessCreateWithoutGeneratedWebsitesInput, BusinessUncheckedCreateWithoutGeneratedWebsitesInput>
+    where?: BusinessWhereInput
+  }
+
+  export type BusinessUpdateToOneWithWhereWithoutGeneratedWebsitesInput = {
+    where?: BusinessWhereInput
+    data: XOR<BusinessUpdateWithoutGeneratedWebsitesInput, BusinessUncheckedUpdateWithoutGeneratedWebsitesInput>
+  }
+
+  export type BusinessUpdateWithoutGeneratedWebsitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    placeId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    searchedCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    googleMapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reports?: ReportUpdateManyWithoutBusinessNestedInput
+    agentResearches?: AgentResearchUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type BusinessUncheckedUpdateWithoutGeneratedWebsitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    placeId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    searchedCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    googleMapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reports?: ReportUncheckedUpdateManyWithoutBusinessNestedInput
+    agentResearches?: AgentResearchUncheckedUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type AgentResearchUpsertWithoutGeneratedWebsitesInput = {
+    update: XOR<AgentResearchUpdateWithoutGeneratedWebsitesInput, AgentResearchUncheckedUpdateWithoutGeneratedWebsitesInput>
+    create: XOR<AgentResearchCreateWithoutGeneratedWebsitesInput, AgentResearchUncheckedCreateWithoutGeneratedWebsitesInput>
+    where?: AgentResearchWhereInput
+  }
+
+  export type AgentResearchUpdateToOneWithWhereWithoutGeneratedWebsitesInput = {
+    where?: AgentResearchWhereInput
+    data: XOR<AgentResearchUpdateWithoutGeneratedWebsitesInput, AgentResearchUncheckedUpdateWithoutGeneratedWebsitesInput>
+  }
+
+  export type AgentResearchUpdateWithoutGeneratedWebsitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumResearchStatusFieldUpdateOperationsInput | $Enums.ResearchStatus
+    websiteExists?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    business?: BusinessUpdateOneRequiredWithoutAgentResearchesNestedInput
+  }
+
+  export type AgentResearchUncheckedUpdateWithoutGeneratedWebsitesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    businessId?: StringFieldUpdateOperationsInput | string
+    status?: EnumResearchStatusFieldUpdateOperationsInput | $Enums.ResearchStatus
+    websiteExists?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    researchData?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReportCreateManyBusinessInput = {
@@ -6209,6 +8481,23 @@ export namespace Prisma {
     error?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type GeneratedWebsiteCreateManyBusinessInput = {
+    id?: string
+    researchId?: string | null
+    status?: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: string | null
+    summary?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deploymentUrl?: string | null
+    vercelDeploymentId?: string | null
+    deploymentStatus?: string | null
+    deployedAt?: Date | string | null
   }
 
   export type ReportUpdateWithoutBusinessInput = {
@@ -6249,6 +8538,7 @@ export namespace Prisma {
     error?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedWebsites?: GeneratedWebsiteUpdateManyWithoutResearchNestedInput
   }
 
   export type AgentResearchUncheckedUpdateWithoutBusinessInput = {
@@ -6259,6 +8549,7 @@ export namespace Prisma {
     error?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedWebsites?: GeneratedWebsiteUncheckedUpdateManyWithoutResearchNestedInput
   }
 
   export type AgentResearchUncheckedUpdateManyWithoutBusinessInput = {
@@ -6269,6 +8560,125 @@ export namespace Prisma {
     error?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GeneratedWebsiteUpdateWithoutBusinessInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    research?: AgentResearchUpdateOneWithoutGeneratedWebsitesNestedInput
+  }
+
+  export type GeneratedWebsiteUncheckedUpdateWithoutBusinessInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    researchId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GeneratedWebsiteUncheckedUpdateManyWithoutBusinessInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    researchId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GeneratedWebsiteCreateManyResearchInput = {
+    id?: string
+    businessId: string
+    status?: $Enums.GeneratedWebsiteStatus
+    websitePath: string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: string | null
+    summary?: string | null
+    error?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deploymentUrl?: string | null
+    vercelDeploymentId?: string | null
+    deploymentStatus?: string | null
+    deployedAt?: Date | string | null
+  }
+
+  export type GeneratedWebsiteUpdateWithoutResearchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    business?: BusinessUpdateOneRequiredWithoutGeneratedWebsitesNestedInput
+  }
+
+  export type GeneratedWebsiteUncheckedUpdateWithoutResearchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    businessId?: StringFieldUpdateOperationsInput | string
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type GeneratedWebsiteUncheckedUpdateManyWithoutResearchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    businessId?: StringFieldUpdateOperationsInput | string
+    status?: EnumGeneratedWebsiteStatusFieldUpdateOperationsInput | $Enums.GeneratedWebsiteStatus
+    websitePath?: StringFieldUpdateOperationsInput | string
+    files?: NullableJsonNullValueInput | InputJsonValue
+    previewHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deploymentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    vercelDeploymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    deploymentStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deployedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 

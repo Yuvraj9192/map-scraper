@@ -158,6 +158,24 @@ exports.Prisma.AgentResearchScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.GeneratedWebsiteScalarFieldEnum = {
+  id: 'id',
+  businessId: 'businessId',
+  researchId: 'researchId',
+  status: 'status',
+  websitePath: 'websitePath',
+  files: 'files',
+  previewHtml: 'previewHtml',
+  summary: 'summary',
+  error: 'error',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deploymentUrl: 'deploymentUrl',
+  vercelDeploymentId: 'vercelDeploymentId',
+  deploymentStatus: 'deploymentStatus',
+  deployedAt: 'deployedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -196,10 +214,18 @@ exports.ResearchStatus = exports.$Enums.ResearchStatus = {
   FAILED: 'FAILED'
 };
 
+exports.GeneratedWebsiteStatus = exports.$Enums.GeneratedWebsiteStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
 exports.Prisma.ModelName = {
   Business: 'Business',
   Report: 'Report',
-  AgentResearch: 'AgentResearch'
+  AgentResearch: 'AgentResearch',
+  GeneratedWebsite: 'GeneratedWebsite'
 };
 
 /**
