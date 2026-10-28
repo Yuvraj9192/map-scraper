@@ -46,7 +46,7 @@ async function fetchCategoryBusinesses(city, category) {
 async function main() {
   try {
     // const city = await ask("Enter city or area: ");
-    const city = ludhiana;
+    const city = "Ludhiana";
 
     if (!city) {
       console.log("Please enter a city or area.");

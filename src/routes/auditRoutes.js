@@ -2,6 +2,7 @@ import express from "express";
 import { getBusinessResearchInput } from "../services/businessResearchInput.js";
 import { inspectWebsite } from "../services/websiteInspector.js";
 import { analyzeBusinessWebsite } from "../services/aiBusinessAnalyst.js";
+import { researchBusiness } from "../services/agentResearchService.js";
 import { prisma } from "../lib/prisma.js";
 import { generateReportPdf } from "../services/reportPdf.js";
 import { uploadReportPdf } from "../services/uploadReportPdf.js";
@@ -35,18 +36,42 @@ auditRouter.post("/businesses/:id/analyze", async (req, res) => {
 
     reportId = report.id;
 
-    // 3. Inspect the website if one is available.
-    const inspection = business.website
-      ? await inspectWebsite(business.website)
-      : null;
+    // 3. Inspect the website if one is available. Inspection failures should
+    // not discard the entire report: the AI must disclose the evidence gap.
+    let inspection = null;
+    let inspectionError = null;
+    if (business.website) {
+      try {
+        inspection = await inspectWebsite(business.website);
+      } catch (error) {
+        inspectionError = error?.message || "Website inspection failed";
+        console.warn("Website inspection failed; continuing with limitations:", inspectionError);
+      }
+    }
 
-    // 4. Generate the AI analysis.
+    // 4. Gather external business and competitor research.
+    // Research is best-effort: an audit can still proceed if Tavily or the
+    // research model fails, but the limitation is passed to the analyst.
+    let research = null;
+    let researchError = null;
+
+    try {
+      research = await researchBusiness({ business });
+    } catch (error) {
+      researchError = error?.message || "Business research failed";
+      console.warn("Business research failed; continuing with available evidence:", researchError);
+    }
+
+    // 5. Generate the AI analysis using inspection and research evidence.
     const analysis = await analyzeBusinessWebsite({
       business,
       inspection,
+      inspectionError,
+      research,
+      researchError,
     });
 
-    // 5. Save the report data before generating the PDF.
+    // 6. Save the report data before generating the PDF.
     // Keep the report PENDING until the PDF is uploaded successfully.
     const savedReport = await prisma.report.update({
       where: {
@@ -62,19 +87,20 @@ auditRouter.post("/businesses/:id/analyze", async (req, res) => {
             website: business.website ?? null,
           },
           inspection: inspection ?? null,
+          inspectionError,
           analysis,
         },
       },
     });
 
-    // 6. Generate the PDF using the saved report data.
+    // 7. Generate the PDF using the saved report data.
     const pdf = await generateReportPdf(savedReport);
 
     if (!pdf?.filePath) {
       throw new Error("PDF generation did not return a file path");
     }
 
-    // 7. Upload the PDF to Cloudinary.
+    // 8. Upload the PDF to Cloudinary.
     const cloudPdfUrl = await uploadReportPdf(
       pdf.filePath,
       reportId
@@ -84,7 +110,7 @@ auditRouter.post("/businesses/:id/analyze", async (req, res) => {
       throw new Error("PDF upload did not return a URL");
     }
 
-    // 8. Save the PDF URL and mark the report completed.
+    // 9. Save the PDF URL and mark the report completed.
     const completedReport = await prisma.report.update({
       where: {
         id: reportId,
@@ -96,14 +122,15 @@ auditRouter.post("/businesses/:id/analyze", async (req, res) => {
       },
     });
 
-    // 9. Return the completed report.
+    // 10. Return the completed report.
     return res.status(200).json({
       success: true,
       message: "Business audit and PDF generated successfully",
       businessId: business.id,
       reportId: completedReport.id,
       reportStatus: completedReport.status,
-      inspectionStatus: inspection?.status ?? "not_available",
+      inspectionStatus: inspection?.status ?? (inspectionError ? "inspection_failed" : "not_available"),
+      inspectionError,
       pdfUrl: completedReport.pdfUrl,
       analysis,
     });

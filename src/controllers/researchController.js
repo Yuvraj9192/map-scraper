@@ -48,7 +48,10 @@ export async function runBusinessResearch(req, res) {
       status: completed.status,
       websiteExists: completed.websiteExists,
       websitePath: result.research.websiteStrategy.path,
+      searchStatus: result.searchStatus,
+      searchQueries: result.searchQueries,
       sources: result.sources,
+      qualityWarnings: result.qualityWarnings,
       research: result.research,
     });
   } catch (error) {

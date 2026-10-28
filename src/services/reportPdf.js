@@ -2,50 +2,47 @@
 import PDFDocument from "pdfkit";
 import fs from "node:fs";
 import path from "node:path";
-import https from "node:https";
-import http from "node:http";
-import dns from "node:dns/promises";
-import net from "node:net";
 import { fileURLToPath } from "node:url";
-import ipaddr from "ipaddr.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const reportsDir = path.resolve(__dirname, "../../reports");
-
-const DEFAULT_COLOR = "#17365D";
-const DEFAULT_TEXT = "#253247";
-const MUTED_COLOR = "#64748B";
-const LIGHT_BACKGROUND = "#F4F7FB";
 
 fs.mkdirSync(reportsDir, { recursive: true });
 
-function safeColor(value, fallback = DEFAULT_COLOR) {
-  if (typeof value !== "string") return fallback;
+const ACCENT = "#0c131d";
+const TEXT = "#2c202000";
+const MUTED = "#64748B";
+const LIGHT = "#F4F7FB";
+const BORDER = "#DCE4EE";
 
-  const color = value.trim();
+function text(value, fallback = "Not available") {
+  if (value === null || value === undefined) return fallback;
 
-  if (/^#[0-9a-fA-F]{6}$/.test(color)) return color;
-
-  if (/^#[0-9a-fA-F]{3}$/.test(color)) {
-    return (
-      "#" +
-      color
-        .slice(1)
-        .split("")
-        .map((character) => character + character)
-        .join("")
-    );
+  if (typeof value === "string") {
+    return value.trim() || fallback;
   }
 
-  return fallback;
+  return String(value);
 }
 
-function formatDate(value) {
+function list(value) {
+  return Array.isArray(value)
+    ? value.filter(
+        (item) =>
+          item !== null &&
+          item !== undefined &&
+          String(item).trim() !== ""
+      )
+    : [];
+}
+
+function dateLabel(value) {
   const date = value ? new Date(value) : new Date();
 
-  if (Number.isNaN(date.getTime())) return "Not available";
+  if (Number.isNaN(date.getTime())) {
+    return "Not available";
+  }
 
   return date.toLocaleDateString("en-IN", {
     day: "2-digit",
@@ -54,784 +51,850 @@ function formatDate(value) {
   });
 }
 
-function cleanText(value, fallback = "Not available") {
-  if (typeof value !== "string") return fallback;
-
-  const text = value.trim();
-  return text || fallback;
-}
-
 function getBusiness(data, report) {
   return (
     data.business ??
     data.analysis?.business ??
+    data.report?.business ??
     report.business ??
     {}
   );
 }
 
 function getAnalysis(data) {
-  const analysis = data.analysis ?? {};
-
+  const analysis = data.analysis ?? data;
   return analysis.report ?? analysis;
 }
 
-function getBranding(data, analysis) {
-  const inspection = data.inspection ?? {};
-  const firstPage = inspection.pages?.[0] ?? {};
-
-  const inspectedBranding =
-    firstPage.branding ??
-    inspection.branding ??
-    {};
-
-  const analysisBranding = analysis.branding ?? {};
-
-  // Logo detection: prefer website inspection over AI.
-  const logoUrl =
-    inspectedBranding.logoUrl ??
-    inspectedBranding.logo ??
-    firstPage.logoUrl ??
-    analysisBranding.logoUrl ??
-    analysisBranding.logo ??
-    null;
-
-  const faviconUrl =
-    inspectedBranding.faviconUrl ??
-    firstPage.faviconUrl ??
-    inspection.faviconUrl ??
-    analysisBranding.faviconUrl ??
-    null;
-
-  // Check possible color sources in priority order.
-  const colorCandidates = [
-    {
-      value: inspectedBranding.primaryColor,
-      source: "website inspection: primaryColor",
-    },
-    {
-      value: inspectedBranding.themeColor,
-      source: "website inspection: themeColor",
-    },
-    {
-      value: firstPage.themeColor,
-      source: "page inspection: themeColor",
-    },
-    {
-      value: analysisBranding.primaryColor,
-      source: "AI analysis",
-    },
-  ];
-
-  const detectedColor = colorCandidates.find(
-    ({ value }) =>
-      typeof value === "string" &&
-      safeColor(value, null) !== null
-  );
-
-  // Neutral fallback; do not present it as an official brand color.
-  const DEFAULT_BRAND_COLOR = "#64748B";
-
-  const primaryColor = detectedColor
-    ? safeColor(detectedColor.value, DEFAULT_BRAND_COLOR)
-    : DEFAULT_BRAND_COLOR;
-
-  const primaryColorSource =
-    detectedColor?.source ?? "fallback: no color detected";
-
-  console.log("[Brand Detection]", {
-    primaryColor,
-    source: primaryColorSource,
-    logoFound: Boolean(logoUrl),
-    faviconFound: Boolean(faviconUrl),
-  });
-
-  // Secondary colors.
-  const rawSecondaryColors =
-    inspectedBranding.secondaryColors ??
-    analysisBranding.secondaryColors ??
-    [];
-
-  const secondaryColors = Array.isArray(rawSecondaryColors)
-    ? [
-        ...new Set(
-          rawSecondaryColors
-            .map((color) => safeColor(color, null))
-            .filter(Boolean)
-            .filter((color) => color !== primaryColor)
-        ),
-      ].slice(0, 4)
-    : [];
-
-  const typography =
-    inspectedBranding.typography ??
-    analysisBranding.typography ??
-    null;
-
-  const notes =
-    inspectedBranding.notes ??
-    analysisBranding.notes ??
-    null;
-
-  return {
-    logoUrl,
-    faviconUrl,
-    primaryColor,
-    primaryColorSource,
-    secondaryColors,
-    typography,
-    notes,
-  };
-}
-/**
- * Reject private/local addresses before downloading a website logo.
- * The image is optional: failure never stops PDF generation.
- */
-function isPublicIp(address) {
-  try {
-    const parsed = ipaddr.parse(address);
-
-    if (parsed.kind() === "ipv6" && parsed.isIPv4MappedAddress()) {
-      return isPublicIp(parsed.toIPv4Address().toString());
-    }
-
-    return parsed.range() === "unicast";
-  } catch {
-    return false;
-  }
+function safeUrl(url) {
+  return typeof url === "string" && /^https?:\/\//i.test(url);
 }
 
-async function downloadPublicImage(imageUrl, redirects = 0) {
-  if (redirects > 3 || typeof imageUrl !== "string") {
-    return null;
-  }
+function ensureSpace(doc, needed = 45) {
+  const bottom = doc.page.height - doc.page.margins.bottom;
 
-  let url;
-
-  try {
-    url = new URL(imageUrl);
-  } catch {
-    return null;
-  }
-
-  if (!["http:", "https:"].includes(url.protocol)) return null;
-  if (url.username || url.password) return null;
-
-  const hostname = url.hostname.replace(/^\[|\]$/g, "");
-
-  if (
-    hostname === "localhost" ||
-    hostname.endsWith(".localhost") ||
-    hostname.endsWith(".local")
-  ) {
-    return null;
-  }
-
-  if (net.isIP(hostname)) {
-    if (!isPublicIp(hostname)) return null;
-  } else {
-    let addresses;
-
-    try {
-      addresses = await dns.lookup(hostname, { all: true });
-    } catch {
-      return null;
-    }
-
-    if (
-      addresses.length === 0 ||
-      addresses.some(({ address }) => !isPublicIp(address))
-    ) {
-      return null;
-    }
-  }
-
-  return new Promise((resolve) => {
-    const transport = url.protocol === "https:" ? https : http;
-
-    const request = transport.get(
-      url,
-      {
-        timeout: 5000,
-        headers: {
-          "User-Agent": "BusinessAuditReport/1.0",
-          Accept: "image/png,image/jpeg,image/gif",
-        },
-      },
-      (response) => {
-        const status = response.statusCode ?? 0;
-
-        if ([301, 302, 303, 307, 308].includes(status)) {
-          const location = response.headers.location;
-          response.resume();
-
-          if (!location) return resolve(null);
-
-          return resolve(
-            downloadPublicImage(
-              new URL(location, url).toString(),
-              redirects + 1
-            )
-          );
-        }
-
-        if (status !== 200) {
-          response.resume();
-          return resolve(null);
-        }
-
-        const contentType = String(
-          response.headers["content-type"] ?? ""
-        )
-          .split(";")[0]
-          .trim()
-          .toLowerCase();
-
-        const supportedTypes = [
-          "image/png",
-          "image/jpeg",
-          "image/jpg",
-          "image/gif",
-        ];
-
-        if (!supportedTypes.includes(contentType)) {
-          response.resume();
-          return resolve(null);
-        }
-
-        const declaredLength = Number(
-          response.headers["content-length"] ?? 0
-        );
-
-        if (declaredLength > 2 * 1024 * 1024) {
-          response.destroy();
-          return resolve(null);
-        }
-
-        const chunks = [];
-        let totalBytes = 0;
-
-        response.on("data", (chunk) => {
-          totalBytes += chunk.length;
-
-          if (totalBytes > 2 * 1024 * 1024) {
-            response.destroy();
-            return;
-          }
-
-          chunks.push(chunk);
-        });
-
-        response.on("end", () => {
-          if (totalBytes > 2 * 1024 * 1024) {
-            return resolve(null);
-          }
-
-          const buffer = Buffer.concat(chunks);
-
-          // Check common image signatures before passing data to PDFKit.
-          const isPng =
-            buffer.length >= 8 &&
-            buffer.subarray(0, 8).equals(
-              Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])
-            );
-
-          const isJpeg =
-            buffer.length >= 3 &&
-            buffer[0] === 0xff &&
-            buffer[1] === 0xd8 &&
-            buffer[2] === 0xff;
-
-          const isGif =
-            buffer.length >= 6 &&
-            ["GIF87a", "GIF89a"].includes(
-              buffer.subarray(0, 6).toString("ascii")
-            );
-
-          resolve(isPng || isJpeg || isGif ? buffer : null);
-        });
-
-        response.on("error", () => resolve(null));
-      }
-    );
-
-    request.on("timeout", () => {
-      request.destroy();
-      resolve(null);
-    });
-
-    request.on("error", () => resolve(null));
-  });
-}
-
-function ensureSpace(doc, requiredHeight = 80) {
-  if (doc.y + requiredHeight > doc.page.height - 65) {
+  if (doc.y + needed > bottom) {
     doc.addPage();
   }
 }
 
-function addSectionTitle(doc, title, primaryColor) {
-  ensureSpace(doc, 65);
+function sectionTitle(doc, title) {
+  ensureSpace(doc, 34);
 
-  doc.moveDown(0.7);
-
+  doc.moveDown(0.08);
   doc
     .font("Helvetica-Bold")
-    .fontSize(16)
-    .fillColor(primaryColor)
-    .text(title);
+    .fontSize(11.5)
+    .fillColor(ACCENT)
+    .text(title, { lineGap: 0 });
 
-  const lineY = doc.y + 7;
+  const y = doc.y + 2;
 
   doc
     .save()
-    .strokeColor(primaryColor)
-    .lineWidth(1.5)
-    .moveTo(doc.page.margins.left, lineY)
-    .lineTo(doc.page.width - doc.page.margins.right, lineY)
+    .strokeColor(BORDER)
+    .lineWidth(1)
+    .moveTo(doc.page.margins.left, y)
+    .lineTo(
+      doc.page.width - doc.page.margins.right,
+      y
+    )
     .stroke()
     .restore();
 
-  doc.y = lineY + 12;
+  doc.y = y + 4;
 }
 
-function addLabel(doc, label, value, primaryColor) {
-  if (!value) return;
+function paragraph(doc, value, opts = {}) {
+  if (
+    value === null ||
+    value === undefined ||
+    !String(value).trim()
+  ) {
+    return;
+  }
 
-  ensureSpace(doc, 35);
+  const {
+    bold = false,
+    size = 9.5,
+    color = TEXT,
+    ...otherOptions
+  } = opts;
+
+  doc
+    .font(bold ? "Helvetica-Bold" : "Helvetica")
+    .fontSize(size)
+    .fillColor(color)
+    .text(String(value), {
+      lineGap: 1,
+      paragraphGap: 0,
+      ...otherOptions,
+    });
+}
+
+function bulletList(doc, values, emptyMessage = "") {
+  const items = list(values);
+
+  if (!items.length) {
+    if (emptyMessage) {
+      paragraph(doc, emptyMessage, {
+        color: MUTED,
+        size: 8.5,
+      });
+    }
+
+    return;
+  }
+
+  for (const item of items) {
+    ensureSpace(doc, 24);
+
+    doc
+      .font("Helvetica")
+      .fontSize(9.2)
+      .fillColor(ACCENT)
+      .text("•", { continued: true });
+
+    doc
+      .font("Helvetica")
+      .fontSize(9.2)
+      .fillColor(TEXT)
+      .text(`  ${String(item)}`, {
+        indent: 8,
+        lineGap: 1,
+      });
+  }
+}
+
+function labelValue(doc, label, value) {
+  if (
+    value === undefined ||
+    value === null ||
+    value === ""
+  ) {
+    return;
+  }
+
+  ensureSpace(doc, 22);
 
   doc
     .font("Helvetica-Bold")
     .fontSize(9)
-    .fillColor(primaryColor)
+    .fillColor(ACCENT)
     .text(`${label}: `, { continued: true });
 
   doc
     .font("Helvetica")
     .fontSize(9)
-    .fillColor(DEFAULT_TEXT)
-    .text(String(value));
+    .fillColor(TEXT)
+    .text(String(value), { lineGap: 1 });
 }
 
-function addBullet(doc, text, primaryColor) {
+function panel(doc, title, body, options = {}) {
+  const x = doc.page.margins.left;
+  const width =
+    doc.page.width -
+    doc.page.margins.left -
+    doc.page.margins.right;
+
+  const bodyText = text(body, "");
+
+  const bodyHeight = doc.heightOfString(bodyText, {
+    width: width - 24,
+    font: "Helvetica",
+    fontSize: 8.7,
+    lineGap: 1,
+  });
+
+  const titleHeight = 15;
+  const estimatedHeight = Math.max(
+    42,
+    titleHeight + bodyHeight + 24
+  );
+
+  // Avoid forcing a fixed-height panel across pages.
+  ensureSpace(doc, Math.min(estimatedHeight, 180));
+
+  const y = doc.y;
+
+  doc
+    .save()
+    .roundedRect(x, y, width, estimatedHeight, 6)
+    .fill(options.background ?? LIGHT)
+    .restore();
+
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(9.5)
+    .fillColor(options.titleColor ?? ACCENT)
+    .text(title, x + 12, y + 9, {
+      width: width - 24,
+      lineGap: 0,
+    });
+
+  const bodyY = doc.y + 3;
+
+  doc
+    .font("Helvetica")
+    .fontSize(8.7)
+    .fillColor(TEXT)
+    .text(bodyText, x + 12, bodyY, {
+      width: width - 24,
+      lineGap: 1,
+    });
+
+  doc.y = Math.max(
+    doc.y,
+    y + estimatedHeight
+  ) + 3;
+}
+
+function findingCard(doc, item, heading) {
+  if (!item || typeof item !== "object") return;
+
   ensureSpace(doc, 65);
 
   doc
-    .font("Helvetica")
-    .fontSize(10)
-    .fillColor(primaryColor)
-    .text("•", { continued: true });
-
-  doc
-    .font("Helvetica")
-    .fontSize(10)
-    .fillColor(DEFAULT_TEXT)
-    .text(`  ${text}`, {
-      width:
-        doc.page.width -
-        doc.page.margins.left -
-        doc.page.margins.right -
-        12,
-      lineGap: 3,
+    .font("Helvetica-Bold")
+    .fontSize(9.5)
+    .fillColor(TEXT)
+    .text(text(item.title, heading || "Insight"), {
+      lineGap: 1,
     });
 
-  doc.moveDown(0.35);
-}
+  const meta = [
+    item.priority ? `Priority: ${item.priority}` : null,
+    item.confidence ? `Confidence: ${item.confidence}` : null,
+    item.category ? `Category: ${item.category}` : null,
+  ]
+    .filter(Boolean)
+    .join("  •  ");
 
-function normalizeFinding(item) {
-  if (typeof item === "string") {
-    return {
-      title: item,
-      description: "",
-      evidence: "",
-      recommendation: "",
-      priority: "",
-      expectedImpact: "",
-    };
+  if (meta) {
+    paragraph(doc, meta, {
+      color: MUTED,
+      size: 8,
+    });
   }
 
-  if (!item || typeof item !== "object") {
-    return null;
+  if (item.description) {
+    paragraph(doc, item.description);
   }
 
-  return {
-    title: cleanText(item.title, "Observation"),
-    description: cleanText(item.description, ""),
-    evidence: cleanText(item.evidence, ""),
-    recommendation: cleanText(item.recommendation, ""),
-    priority: cleanText(item.priority, ""),
-    expectedImpact: cleanText(item.expectedImpact, ""),
-  };
-}
+  if (item.evidence) {
+    labelValue(doc, "Evidence", item.evidence);
+  }
 
-function renderFindings(doc, title, findings, primaryColor) {
-  addSectionTitle(doc, title, primaryColor);
-
-  if (!Array.isArray(findings) || findings.length === 0) {
-    addBullet(
+  if (item.recommendation) {
+    labelValue(
       doc,
-      "No findings were provided for this section.",
-      primaryColor
+      "Recommended action",
+      item.recommendation
     );
-    return;
   }
 
-  findings.forEach((item) => {
-    const finding = normalizeFinding(item);
-    if (!finding) return;
+  if (item.expectedImpact) {
+    labelValue(
+      doc,
+      "Expected impact",
+      item.expectedImpact
+    );
+  }
 
-    ensureSpace(doc, 85);
+  const urls = list(item.sourceUrls).filter(safeUrl);
 
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(11)
-      .fillColor(DEFAULT_TEXT)
-      .text(finding.title);
-
-    doc.moveDown(0.2);
-
-    if (finding.description) {
-      doc
-        .font("Helvetica")
-        .fontSize(10)
-        .fillColor(DEFAULT_TEXT)
-        .text(finding.description, { lineGap: 3 });
-
-      doc.moveDown(0.25);
-    }
-
-    if (finding.evidence) {
-      addLabel(doc, "Evidence", finding.evidence, primaryColor);
-    }
-
-    if (finding.priority) {
-      addLabel(doc, "Priority", finding.priority, primaryColor);
-    }
-
-    if (finding.recommendation) {
-      addLabel(
-        doc,
-        "Recommended action",
-        finding.recommendation,
-        primaryColor
-      );
-    }
-
-    if (finding.expectedImpact) {
-      addLabel(
-        doc,
-        "Expected impact",
-        finding.expectedImpact,
-        primaryColor
-      );
-    }
-
-    doc.moveDown(0.55);
-  });
+  if (urls.length) {
+    labelValue(doc, "Sources", urls.join(" | "));
+  }
 }
 
-function getTypographyLabel(typography) {
-  if (!typography) return null;
+function actionCard(doc, action) {
+  if (!action) return;
 
-  if (typeof typography === "string") return typography;
+  ensureSpace(doc, 55);
 
-  if (typeof typography === "object") {
-    return [
-      typography.headingFont
-        ? `Headings: ${typography.headingFont}`
-        : null,
-      typography.bodyFont
-        ? `Body: ${typography.bodyFont}`
-        : null,
-      typography.fontFamily
-        ? `Font family: ${typography.fontFamily}`
-        : null,
-    ]
-      .filter(Boolean)
-      .join(" | ");
-  }
+  const timeframe = text(
+    action.timeframe,
+    "Timeframe"
+  )
+    .replaceAll("_", " ")
+    .toUpperCase();
 
-  return null;
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(10)
+    .fillColor(ACCENT)
+    .text(
+      `${timeframe} — ${text(action.action, "Action")}`
+    );
+
+  labelValue(
+    doc,
+    "Why this matters",
+    action.rationale
+  );
+
+  labelValue(
+    doc,
+    "Success metric",
+    action.successMetric
+  );
+
+  labelValue(
+    doc,
+    "Dependency",
+    action.dependency
+  );
+
+  labelValue(
+    doc,
+    "Priority",
+    action.priority
+  );
 }
 
 export async function generateReportPdf(report) {
   const data = report.reportData ?? {};
-  const business = getBusiness(data, report);
   const analysis = getAnalysis(data);
-  const branding = getBranding(data, analysis);
+  const business = getBusiness(data, report);
 
-  const companyName = cleanText(
+  const research =
+    data.research ??
+    data.analysis?.research ??
+    analysis.research ??
+    {};
+
+  const companyName = text(
     business.name ?? business.companyName,
-    "Business"
+    "Business Intelligence Report"
   );
 
-  const primaryColor = branding.primaryColor;
-  const secondaryColors = branding.secondaryColors ?? [];
+  const category = text(
+    business.category ?? business.searchedCategory,
+    ""
+  );
 
-  const website =
-    business.website ??
-    data.inspection?.website ??
-    data.inspection?.pages?.[0]?.url ??
-    null;
+  const address = text(
+    business.address ?? business.location,
+    ""
+  );
 
-  const category = business.category ?? null;
-  const address = business.address ?? business.location ?? null;
+  const website = text(business.website, "");
 
-  const reportId = report.id ?? `report-${Date.now()}`;
+  const intelligence = analysis.executiveSummary
+    ? analysis
+    : analysis.report ?? {};
+
+  const generatedAt =
+    analysis.generatedAt ??
+    report.createdAt ??
+    new Date();
+
+  const reportId =
+    report.id ?? `report-${Date.now()}`;
+
   const filename = `${reportId}.pdf`;
   const filePath = path.join(reportsDir, filename);
 
   const doc = new PDFDocument({
     size: "A4",
     margins: {
-      top: 48,
-      bottom: 55,
-      left: 50,
-      right: 50,
+      top: 42,
+      bottom: 42,
+      left: 42,
+      right: 42,
     },
     bufferPages: true,
     info: {
-      Title: `${companyName} - Business Audit Report`,
-      Author: "Business Audit System",
-      Subject: "Business pros, cons, and improvements",
+      Title: `${companyName} - Business Intelligence & Growth Report`,
+      Author: "Business Intelligence Report System",
+      Subject:
+        "Business profile, local market, digital presence, and growth opportunities",
     },
   });
 
-  const writeStream = fs.createWriteStream(filePath);
-  doc.pipe(writeStream);
+  const stream = fs.createWriteStream(filePath);
 
-  // Header brand strip
-  doc
-    .save()
-    .rect(0, 0, doc.page.width, 9)
-    .fill(primaryColor)
-    .restore();
+  doc.pipe(stream);
 
-  doc.y = 40;
+  // Cover and executive brief.
+  doc.save().rect(0, 0, doc.page.width, 10).fill(ACCENT).restore();
 
-  // Find a logo or favicon from the available branding data.
-  const firstPage = data.inspection?.pages?.[0] ?? {};
+  doc.y = 44;
 
-  const logoUrl =
-    branding.logoUrl ??
-    branding.logo ??
-    firstPage.branding?.logoUrl ??
-    firstPage.logoUrl ??
-    data.inspection?.branding?.logoUrl ??
-    null;
+  paragraph(doc, "BUSINESS INTELLIGENCE", {
+    bold: true,
+    size: 9,
+    color: MUTED,
+  });
 
-  const faviconUrl =
-    branding.faviconUrl ??
-    firstPage.branding?.faviconUrl ??
-    firstPage.faviconUrl ??
-    data.inspection?.branding?.faviconUrl ??
-    null;
-
-  let logo = null;
-  let usedLogoUrl = null;
-
-  // Try the actual business logo first.
-  for (const imageUrl of [logoUrl, faviconUrl]) {
-    if (!imageUrl || typeof imageUrl !== "string") {
-      continue;
-    }
-
-    try {
-      const downloadedImage = await downloadPublicImage(imageUrl);
-
-      if (downloadedImage) {
-        logo = downloadedImage;
-        usedLogoUrl = imageUrl;
-        break;
-      }
-    } catch (error) {
-      console.warn("Unable to load business branding image:", error.message);
-    }
-  }
-
-  // Render the logo without allowing image errors to break the PDF.
-  if (logo) {
-    try {
-      doc.image(logo, 50, doc.y, {
-        fit: [100, 55],
-        align: "left",
-        valign: "center",
-      });
-
-      doc.y += 62;
-    } catch (error) {
-      console.warn("Unable to render business logo:", error.message);
-      logo = null;
-    }
-  }
-
-  // Business name
   doc
     .font("Helvetica-Bold")
-    .fontSize(24)
-    .fillColor(primaryColor)
+    .fontSize(22)
+    .fillColor(ACCENT)
     .text(companyName, {
-      width: doc.page.width - 100,
+      width: doc.page.width - 96,
+      lineGap: 2,
     });
 
-  doc.moveDown(0.2);
+  doc.moveDown(0.3);
 
   doc
     .font("Helvetica")
     .fontSize(12)
-    .fillColor(MUTED_COLOR)
-    .text("BUSINESS AUDIT REPORT");
+    .fillColor(MUTED)
+    .text("Growth Opportunities & Market Position Report");
 
-  doc.moveDown(0.9);
+  doc.moveDown(0.4);
 
-  // Brand-colored metadata panel
-  const panelY = doc.y;
-  const panelHeight = 100;
+  const meta = [
+    category && `Category: ${category}`,
+    address && `Location: ${address}`,
+    website && `Website: ${website}`,
+    `Report ID: ${reportId}`,
+    `Generated: ${dateLabel(generatedAt)}`,
+  ].filter(Boolean);
 
-  doc
-    .save()
-    .roundedRect(50, panelY, doc.page.width - 100, panelHeight, 8)
-    .fill(LIGHT_BACKGROUND)
-    .restore();
-
-  doc.y = panelY + 13;
-
-  addLabel(doc, "Company", companyName, primaryColor);
-
-  if (category) {
-    addLabel(doc, "Category", category, primaryColor);
-  }
-
-  if (address) {
-    addLabel(doc, "Location", address, primaryColor);
-  }
-
-  if (website) {
-    addLabel(doc, "Website", website, primaryColor);
-  }
-
-  doc.y = panelY + panelHeight + 8;
-
-  doc
-    .font("Helvetica")
-    .fontSize(8)
-    .fillColor(MUTED_COLOR)
-    .text(`Report ID: ${reportId}`);
-
-  doc.text(`Generated: ${formatDate(report.createdAt)}`);
-
-  doc.moveDown(0.7);
-
-  // Brand identity
-  addSectionTitle(doc, "Brand Identity", primaryColor);
-
-  addLabel(doc, "Primary color", primaryColor, primaryColor);
-
-  const colors = [...new Set([primaryColor, ...secondaryColors])]
-    .filter(
-      (color) =>
-        typeof color === "string" &&
-        /^#[0-9a-fA-F]{6}$/.test(color)
-    )
-    .slice(0, 5);
-
-  const swatchY = doc.y + 8;
-  let swatchX = 50;
-
-  colors.forEach((color) => {
-    doc
-      .save()
-      .roundedRect(swatchX, swatchY, 52, 22, 4)
-      .fill(color)
-      .restore();
-
-    doc
-      .font("Helvetica")
-      .fontSize(7)
-      .fillColor(DEFAULT_TEXT)
-      .text(color, swatchX, swatchY + 26, {
-        width: 65,
-      });
-
-    swatchX += 78;
-  });
-
-  doc.y = swatchY + 48;
-
-  const typography = getTypographyLabel(branding.typography);
-
-  if (typography) {
-    addLabel(doc, "Typography", typography, primaryColor);
-  }
-
-  if (branding.notes) {
-    addLabel(doc, "Branding notes", branding.notes, primaryColor);
-  }
-
-  if (!logo) {
-    doc
-      .font("Helvetica")
-      .fontSize(8)
-      .fillColor(MUTED_COLOR)
-      .text(
-        logoUrl || faviconUrl
-          ? "The business logo was detected, but its image could not be loaded. Check the image URL and format."
-          : "No company logo was detected during website inspection."
-      );
-
-    doc.moveDown(0.4);
-  } else {
-    console.log("Business branding image loaded:", usedLogoUrl);
-  }
-
-  // Only the three requested audit sections
-  renderFindings(doc, "Pros", analysis.pros, primaryColor);
-  renderFindings(doc, "Cons", analysis.cons, primaryColor);
-  renderFindings(
+  panel(
     doc,
-    "Improvements",
-    analysis.improvements,
-    primaryColor
+    "BUSINESS PROFILE",
+    meta.join("\n") ||
+      "Business profile details were not supplied."
   );
 
-  // Footer and page numbers
-  const range = doc.bufferedPageRange();
+  sectionTitle(doc, "01  Executive intelligence brief");
 
-  for (let i = range.start; i < range.start + range.count; i++) {
+  const exec = intelligence.executiveSummary ?? {};
+
+  panel(
+    doc,
+    "Executive summary",
+    exec.overview ??
+      "An executive summary could not be generated from the available evidence."
+  );
+
+  labelValue(doc, "Current position", exec.currentPosition);
+  labelValue(
+    doc,
+    "Biggest opportunity",
+    exec.biggestOpportunity
+  );
+  labelValue(doc, "Confidence", exec.confidence);
+
+  if (list(exec.keyRisks).length) {
+    paragraph(doc, "Key risks", {
+      bold: true,
+      color: ACCENT,
+    });
+
+    bulletList(doc, exec.keyRisks);
+  }
+
+  sectionTitle(
+    doc,
+    "02  Business model & customer acquisition"
+  );
+
+  const profile = intelligence.businessProfile ?? {};
+
+  labelValue(doc, "Business model", profile.businessModel);
+
+  const profileSections = [
+    ["Products and services", profile.productsAndServices],
+    ["Target audiences", profile.targetAudiences],
+    [
+      "Customer acquisition channels",
+      profile.customerAcquisitionChannels,
+    ],
+    ["Verified facts", profile.verifiedFacts],
+    ["Assumptions to validate", profile.assumptions],
+  ];
+
+  for (const [heading, values] of profileSections) {
+    if (!list(values).length) continue;
+
+    paragraph(doc, heading, {
+      bold: true,
+      color: ACCENT,
+    });
+
+    bulletList(doc, values);
+  }
+
+  sectionTitle(doc, "03  Local market & positioning");
+
+  const market = intelligence.marketPosition ?? {};
+
+  paragraph(
+    doc,
+    market.summary ??
+      "Market position could not be established from the supplied evidence."
+  );
+
+  const marketSections = [
+    ["Local market signals", market.localMarketSignals],
+    [
+      "Differentiation opportunities",
+      market.differentiationOpportunities,
+    ],
+    ["Evidence gaps", market.evidenceGaps],
+  ];
+
+  for (const [heading, values] of marketSections) {
+    if (!list(values).length) continue;
+
+    paragraph(doc, heading, {
+      bold: true,
+      color: ACCENT,
+    });
+
+    bulletList(doc, values);
+  }
+
+  sectionTitle(doc, "04  Competitor intelligence");
+
+  const competitors = list(
+    intelligence.competitorBenchmark
+  );
+
+  if (!competitors.length) {
+    panel(
+      doc,
+      "No verified competitor comparison",
+      "The supplied research did not establish enough relevant, location-matched competitor evidence. This is a research limitation, not proof that competitors do not exist."
+    );
+  } else {
+    for (const competitor of competitors) {
+      ensureSpace(doc, 100);
+
+      doc
+        .font("Helvetica-Bold")
+        .fontSize(11)
+        .fillColor(TEXT)
+        .text(text(competitor.name, "Competitor"));
+
+      labelValue(
+        doc,
+        "Location relevance",
+        competitor.locationRelevance
+      );
+
+      if (safeUrl(competitor.website)) {
+        labelValue(doc, "Website", competitor.website);
+      }
+
+      if (list(competitor.observableStrengths).length) {
+        paragraph(doc, "Observable strengths", {
+          bold: true,
+          color: ACCENT,
+        });
+
+        bulletList(
+          doc,
+          competitor.observableStrengths
+        );
+      }
+
+      labelValue(
+        doc,
+        "Comparison",
+        competitor.comparisonToBusiness
+      );
+
+      labelValue(
+        doc,
+        "Confidence",
+        competitor.confidence
+      );
+
+      const urls = list(
+        competitor.sourceUrls
+      ).filter(safeUrl);
+
+      if (urls.length) {
+        labelValue(doc, "Sources", urls.join(" | "));
+      }
+    }
+  }
+
+  sectionTitle(
+    doc,
+    "05  Digital presence & customer journey"
+  );
+
+  const digital = intelligence.digitalPresence ?? {};
+
+  labelValue(doc, "Website status", digital.websiteStatus);
+
+  paragraph(
+    doc,
+    digital.customerJourneyAssessment ??
+      "Customer journey assessment was not available."
+  );
+
+  const digitalSections = [
+    ["Channels found", digital.channelsFound],
+    ["Visibility gaps", digital.visibilityGaps],
+    [
+      "Trust and conversion gaps",
+      digital.trustAndConversionGaps,
+    ],
+  ];
+
+  for (const [heading, values] of digitalSections) {
+    if (!list(values).length) continue;
+
+    paragraph(doc, heading, {
+      bold: true,
+      color: ACCENT,
+    });
+
+    bulletList(doc, values);
+  }
+
+  sectionTitle(doc, "06  Strategic insights");
+
+  const insights = list(
+    intelligence.strategicInsights
+  );
+
+  if (!insights.length) {
+    paragraph(
+      doc,
+      "No sufficiently supported strategic insights were returned. Review the evidence gaps before making business-specific decisions.",
+      { color: MUTED }
+    );
+  }
+
+  insights.forEach((item) => findingCard(doc, item));
+
+  sectionTitle(doc, "07  Prioritized growth opportunities");
+
+  const opportunities = list(
+    intelligence.growthOpportunities
+  );
+
+  if (!opportunities.length) {
+    paragraph(
+      doc,
+      "No evidence-backed growth opportunities could be prioritized from the current research.",
+      { color: MUTED }
+    );
+  }
+
+  opportunities.forEach((item) => findingCard(doc, item));
+
+  sectionTitle(doc, "08  30 / 60 / 90-day action plan");
+
+  const actions = list(intelligence.actionPlan);
+
+  if (!actions.length) {
+    paragraph(
+      doc,
+      "An action plan could not be grounded in the available evidence.",
+      { color: MUTED }
+    );
+  }
+
+  actions.forEach((item) => actionCard(doc, item));
+
+  sectionTitle(doc, "09  Measurement plan");
+
+  const metrics = list(intelligence.measurementPlan);
+
+  if (!metrics.length) {
+    paragraph(doc, "No measurement plan was returned.", {
+      color: MUTED,
+    });
+  }
+
+  for (const metric of metrics) {
+    ensureSpace(doc, 55);
+
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(10)
+      .fillColor(TEXT)
+      .text(text(metric.metric, "Metric"));
+
+    if (metric.whyItMatters) {
+      paragraph(doc, metric.whyItMatters, {
+        size: 9,
+      });
+    }
+
+    labelValue(
+      doc,
+      "How to measure",
+      metric.howToMeasure
+    );
+
+    labelValue(
+      doc,
+      "Baseline",
+      metric.baselineStatus
+    );
+  }
+
+  sectionTitle(doc, "10  Supporting findings");
+
+  const supportingSections = [
+    ["Strengths supported by evidence", "pros"],
+    ["Risks and weaknesses", "cons"],
+    ["Recommended improvements", "improvements"],
+  ];
+
+  for (const [heading, key] of supportingSections) {
+    const items = list(intelligence[key]);
+
+    if (!items.length) continue;
+
+    paragraph(doc, heading, {
+      bold: true,
+      color: ACCENT,
+      size: 10,
+    });
+
+    items.forEach((item) => findingCard(doc, item));
+  }
+
+  sectionTitle(
+    doc,
+    "11  Sources, confidence & limitations"
+  );
+
+  const sources = list(
+    research.sources ?? analysis.research?.sources
+  );
+
+  if (sources.length) {
+    const uniqueSources = new Map();
+
+    for (const source of sources) {
+      if (safeUrl(source.url)) {
+        uniqueSources.set(source.url, source);
+      }
+    }
+
+    for (const source of uniqueSources.values()) {
+      ensureSpace(doc, 24);
+
+      paragraph(
+        doc,
+        text(source.title, source.url),
+        {
+          bold: true,
+          size: 8.5,
+        }
+      );
+
+      paragraph(doc, source.url, {
+        size: 8,
+        color: MUTED,
+      });
+    }
+  } else {
+    paragraph(
+      doc,
+      "No source URLs were attached to this report. Treat market and competitor statements as unverified until sources are collected.",
+      { color: MUTED }
+    );
+  }
+
+  const limitations = [
+    ...list(intelligence.limitations),
+    ...list(research.qualityWarnings),
+  ];
+
+  if (limitations.length) {
+    paragraph(doc, "Limitations", {
+      bold: true,
+      color: ACCENT,
+    });
+
+    bulletList(doc, [...new Set(limitations)]);
+  }
+
+  paragraph(
+    doc,
+    "Interpretation note: This report distinguishes supplied evidence from assumptions. Qualitative impact statements are hypotheses to validate; no revenue, traffic, or conversion lift is guaranteed.",
+    {
+      size: 8,
+      color: MUTED,
+    }
+  );
+
+  // IMPORTANT:
+  // Capture the actual page count BEFORE adding footers.
+  // Temporarily disable bottom-margin overflow checks so
+  // footer text cannot create additional pages.
+  const range = doc.bufferedPageRange();
+  const totalPages = range.count;
+
+  for (
+    let i = range.start;
+    i < range.start + totalPages;
+    i++
+  ) {
     doc.switchToPage(i);
 
-    const footerY = doc.page.height - 35;
+    const page = doc.page;
+    const originalBottomMargin = page.margins.bottom;
 
-    doc
-      .save()
-      .strokeColor(primaryColor)
-      .lineWidth(0.7)
-      .moveTo(50, footerY - 8)
-      .lineTo(doc.page.width - 50, footerY - 8)
-      .stroke()
-      .restore();
+    try {
+      page.margins.bottom = 0;
 
-    doc
-      .font("Helvetica")
-      .fontSize(8)
-      .fillColor(MUTED_COLOR)
-      .text(companyName, 50, footerY, {
-        width: 300,
-        lineBreak: false,
-      });
+      const footerY = page.height - 36;
+      const left = page.margins.left;
+      const right = page.width - page.margins.right;
 
-    doc.text(`Page ${i + 1} of ${range.count}`, doc.page.width - 150, footerY, {
-      width: 100,
-      align: "right",
-      lineBreak: false,
-    });
+      doc
+        .save()
+        .strokeColor(BORDER)
+        .lineWidth(0.7)
+        .moveTo(left, footerY - 8)
+        .lineTo(right, footerY - 8)
+        .stroke()
+        .restore();
+
+      doc
+        .font("Helvetica")
+        .fontSize(7.5)
+        .fillColor(MUTED)
+        .text(
+          `${companyName} | Business Intelligence Report`,
+          left,
+          footerY,
+          {
+            width: 330,
+            lineBreak: false,
+          }
+        );
+
+      doc
+        .font("Helvetica")
+        .fontSize(7.5)
+        .fillColor(MUTED)
+        .text(
+          `Page ${i + 1} of ${totalPages}`,
+          page.width - 145,
+          footerY,
+          {
+            width: 97,
+            align: "right",
+            lineBreak: false,
+          }
+        );
+    } finally {
+      page.margins.bottom = originalBottomMargin;
+    }
   }
 
   doc.end();
 
   await new Promise((resolve, reject) => {
-    writeStream.on("finish", resolve);
-    writeStream.on("error", reject);
+    stream.on("finish", resolve);
+    stream.on("error", reject);
     doc.on("error", reject);
   });
 
