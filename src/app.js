@@ -23,22 +23,26 @@ const __dirname = path.dirname(__filename);
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://YOUR-FRONTEND-DOMAIN.vercel.app",
+  "https://your-actual-frontend.vercel.app",
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        callback(null, true);
+      } else {
+        console.error("Blocked by CORS:", origin);
+        callback(null, false);
       }
-
-      callback(new Error(`CORS blocked: ${origin}`));
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
+
+app.options("*", cors());
 
 // =====================================
 // MIDDLEWARE
